@@ -1,5 +1,6 @@
 package com.example.witchblog.services.impl;
 
+import com.example.witchblog.exceptions.RoleNotFoundException;
 import com.example.witchblog.models.ERole;
 import com.example.witchblog.models.Role;
 import com.example.witchblog.models.User;
@@ -17,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,12 +57,12 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRepository.count() == 0) {
             roles.add(roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new UsernameNotFoundException("temporary")));
+                    .orElseThrow(() -> new RoleNotFoundException("Put in DB role 'ROLE_USER'")));
             roles.add(roleRepository.findByName(ERole.ROLE_ADMIN)
-                    .orElseThrow(() -> new UsernameNotFoundException("temporary")));
+                    .orElseThrow(() -> new RoleNotFoundException("Put in DB role 'ROLE_ADMIN'")));
         } else {
             roles.add(roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new UsernameNotFoundException("temporary")));
+                    .orElseThrow(() -> new RoleNotFoundException("Put in DB role 'ROLE_USER'")));
         }
 
         return roles;

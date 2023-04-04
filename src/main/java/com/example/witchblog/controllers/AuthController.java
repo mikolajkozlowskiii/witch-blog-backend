@@ -44,13 +44,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (authService.checkUsernameAvailability(signUpRequest.getUsername())) {
+        if (!authService.checkUsernameAvailability(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if (authService.checkEmailAvailability(signUpRequest.getEmail())) {
+        if (!authService.checkEmailAvailability(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));

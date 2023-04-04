@@ -18,6 +18,9 @@ public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String firstName;
+
+    private String lastName;
 
     private String username;
 
@@ -37,11 +40,21 @@ public class UserDetailsImpl implements UserDetails {
         return UserDetailsImpl
                 .builder()
                 .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .authorities(authorities)
                 .build();
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     @Override

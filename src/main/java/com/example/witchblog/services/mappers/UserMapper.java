@@ -3,6 +3,7 @@ package com.example.witchblog.services.mappers;
 import com.example.witchblog.models.User;
 import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.response.UserResponse;
+import com.example.witchblog.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,15 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .build();
+    }
+
+    public UserResponse map(UserDetailsImpl userDetails){
+        return UserResponse.builder()
+                .firstName(userDetails.getFirstName())
+                .lastName(userDetails.getLastName())
+                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
                 .build();
     }
 }
