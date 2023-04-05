@@ -47,9 +47,8 @@ public class AuthController {
 
         User createdUser = authService.createUser(signUpRequest);
 
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .createConfirmationToken(createdUser, 15);
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        // TODO REPLACE THOSE 2 LINES ON confirmationTokenService.sendConfirmationEmail();
+        confirmationTokenService.sendConfirmationEmail(createdUser);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
@@ -61,11 +60,9 @@ public class AuthController {
 
     @GetMapping(path = "{email}/sendEmail")
     public ResponseEntity<?> sendConfrimationEmail(@PathVariable String email){
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .createConfirmationToken(email, 15);
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        confirmationTokenService.sendConfirmationEmail(email);
 
-        return ResponseEntity.ok(confirmationToken);
+        return ResponseEntity.ok("email sended to " + email);
     }
 
 }
