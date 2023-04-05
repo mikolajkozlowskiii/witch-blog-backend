@@ -16,4 +16,5 @@ public interface UserService {
     boolean deleteUser(String username, UserDetailsImpl currentUser);
     ApiResponse giveModerator(String username);
     ApiResponse removeModerator(String username);
+    User findUserByEmail(String email);
 }

@@ -28,6 +28,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @JsonIgnore
     private String password;
+    @JsonIgnore
+    private boolean isEnabled;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -45,6 +47,7 @@ public class UserDetailsImpl implements UserDetails {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .isEnabled(user.isEnabled())
                 .authorities(authorities)
                 .build();
     }
@@ -96,9 +99,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return isEnabled; }
 
     @Override
     public boolean equals(Object o) {

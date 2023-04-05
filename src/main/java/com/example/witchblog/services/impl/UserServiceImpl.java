@@ -95,9 +95,17 @@ public class UserServiceImpl implements UserService {
         return new ApiResponse(Boolean.TRUE, "Moderator role removed from user: " + username);
     }
 
+    @Override
+    public User findUserByEmail(String email) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+        return user;
+    }
+
     private User findUserByUsername(String username) {
         User user = userRepository
-                .findByUsername(username)
+                .findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return user;
     }

@@ -12,4 +12,5 @@ public interface AuthService {
     JwtResponse signIn(LoginRequest request);
     boolean checkEmailAvailability(String email);
     boolean checkUsernameAvailability(String username);
+    int enableUser(String email);
 }
