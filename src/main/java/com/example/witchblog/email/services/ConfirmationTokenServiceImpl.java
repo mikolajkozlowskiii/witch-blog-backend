@@ -25,7 +25,7 @@ public class ConfirmationTokenServiceImpl {
     }
 
 
-    public ConfirmationToken createConfirmationToken(User currentUser, long expiresTimeInMinutes){
+    public ConfirmationToken createConfirmationToken(User toUser, long expiresTimeInMinutes){
         String token = UUID.randomUUID().toString();
 
         return ConfirmationToken
@@ -33,16 +33,16 @@ public class ConfirmationTokenServiceImpl {
                 .token(token)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(expiresTimeInMinutes))
-                .user(currentUser)
+                .user(toUser)
                 .build();
     }
 
-    public void sendConfirmationEmail(User cureentUser){
-        ConfirmationToken confirmationToken = createConfirmationToken(cureentUser, 15);
+    public void sendConfirmationEmail(User toUser){
+        ConfirmationToken confirmationToken = createConfirmationToken(toUser, 15);
         saveConfirmationToken(confirmationToken);
 
-        String link = "http://localhost:8080/api/v1/auth/confirm?token=";
-        emailSenderService.send(cureentUser.getEmail(), buildEmail(cureentUser.getFirstName(),
+        String link = "https://witchblog.azurewebsites.net/api/v1/auth/confirm?token=";
+        emailSenderService.send(toUser.getEmail(), buildEmail(toUser.getFirstName(),
                 link + confirmationToken.getToken()));
     }
 
