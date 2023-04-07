@@ -18,7 +18,7 @@ public class TestController {
     public String allAccess() {
         return "Public Content.";
     }
-    @GetMapping("/all")
+    @GetMapping("/test3")
     public String test() {
         return "test.";
     }
