@@ -19,8 +19,12 @@ public class TestController {
         return "Public Content.";
     }
     @GetMapping("/test2")
-    public String test() {
-        return "test.";
+    public String test2() {
+        return "test2.";
+    }
+    @GetMapping("/test3")
+    public String test3() {
+        return "test3.";
     }
     @GetMapping("/sendemail")
     public String sendEmail() {

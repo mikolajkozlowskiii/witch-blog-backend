@@ -97,17 +97,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        User user = userRepository
+        return userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
-        return user;
     }
 
     private User findUserByUsername(String username) {
-        User user = userRepository
-                .findByEmail(username)
+        return userRepository
+                .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
-        return user;
     }
 
     private Role findRoleModerator() {

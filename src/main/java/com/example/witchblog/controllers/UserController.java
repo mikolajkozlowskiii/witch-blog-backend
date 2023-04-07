@@ -45,17 +45,18 @@ public class UserController {
 
     @PutMapping("/{username}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    @CacheEvict(value = "users", key = "#username")
     public ResponseEntity<?> updateUser(@PathVariable(value = "username") String username,
                                                           @Valid @RequestBody SignUpRequest signUpRequest,
                                                           @CurrentUser UserDetailsImpl currentUser){
-        if (!authService.checkUsernameAvailability(signUpRequest.getUsername())) {
+        if (!authService.checkUsernameAvailability(signUpRequest.getUsername()) &&
+                currentUser.getUsername().equals(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if (!authService.checkEmailAvailability(signUpRequest.getEmail())) {
+        if (!authService.checkEmailAvailability(signUpRequest.getEmail()) &&
+                currentUser.getEmail().equals(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
@@ -84,7 +85,6 @@ public class UserController {
     @PutMapping("/{username}/giveMod")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> giveMod(@PathVariable(value = "username") String username){
-        System.out.println("debugd");
         final ApiResponse apiResponse = userService.giveModerator(username);
 
         return new ResponseEntity< >(apiResponse, HttpStatus.OK);
