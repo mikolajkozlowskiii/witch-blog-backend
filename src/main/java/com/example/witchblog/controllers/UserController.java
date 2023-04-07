@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -49,14 +50,14 @@ public class UserController {
                                                           @Valid @RequestBody SignUpRequest signUpRequest,
                                                           @CurrentUser UserDetailsImpl currentUser){
         if (!authService.checkUsernameAvailability(signUpRequest.getUsername()) &&
-                currentUser.getUsername().equals(signUpRequest.getUsername())) {
+                !Objects.equals(currentUser.getUsername(), signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
         if (!authService.checkEmailAvailability(signUpRequest.getEmail()) &&
-                currentUser.getEmail().equals(signUpRequest.getEmail())) {
+                !Objects.equals(currentUser.getEmail(), signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
