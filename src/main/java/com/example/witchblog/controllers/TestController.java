@@ -18,6 +18,10 @@ public class TestController {
     public String allAccess() {
         return "Public Content.";
     }
+    @GetMapping("/all")
+    public String test() {
+        return "test.";
+    }
     @GetMapping("/sendemail")
     public String sendEmail() {
         emailSender.send("mikolajkozlowskiii@gmail.com", "body of email");
