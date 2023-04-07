@@ -49,9 +49,8 @@ public class UserServiceImpl implements UserService {
             Set<Role> userRoles = user.getRoles();
             user = userMapper.map(request);
             user.setId(userId);
+            user.setEnabled(true);
             user.setRoles(userRoles);
-
-
             return userMapper.map(userRepository.save(user));
         }
         throw new UnauthorizedException("update not your account");
