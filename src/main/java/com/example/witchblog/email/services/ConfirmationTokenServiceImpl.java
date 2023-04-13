@@ -2,16 +2,22 @@ package com.example.witchblog.email.services;
 
 import com.example.witchblog.email.entity.ConfirmationToken;
 import com.example.witchblog.email.repositories.ConfirmationTokenRepository;
+import com.example.witchblog.exceptions.ConfirmedEmailException;
 import com.example.witchblog.models.User;
 import com.example.witchblog.security.services.UserDetailsImpl;
 import com.example.witchblog.services.AuthService;
 import com.example.witchblog.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.FilterOutputStream;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,12 +55,29 @@ public class ConfirmationTokenServiceImpl {
     public void sendConfirmationEmail(String email){
         User currentUser = userService.findUserByEmail(email);
 
+        List<ConfirmationToken> userConfirmationTokens =
+                confirmationTokenRepository.findAllByUserId(currentUser.getId());
+
+        checkIfAnyTokenAlreadyConfirmed(userConfirmationTokens);
+
         ConfirmationToken confirmationToken = createConfirmationToken(currentUser, 15);
         saveConfirmationToken(confirmationToken);
 
         String link = "http://localhost:8080/api/v1/auth/confirm?token=";
         emailSenderService.send(currentUser.getEmail(), buildEmail(currentUser.getFirstName(),
                 link + confirmationToken.getToken()));
+    }
+
+    private static void checkIfAnyTokenAlreadyConfirmed(List<ConfirmationToken> userConfirmationTokens) {
+        for(ConfirmationToken token : userConfirmationTokens){
+            System.out.println("token " + token.getConfirmedAt());
+        }
+        if(userConfirmationTokens
+                .stream()
+                .filter(s->!Objects.isNull(s.getConfirmedAt()))
+                .toList().size()>0){
+            throw new ConfirmedEmailException();
+        }
     }
 
     public ConfirmationToken createConfirmationToken(String email, long expiresTimeInMinutes){

@@ -28,7 +28,8 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({AppException.class,
-                       IllegalStateException.class})
+                       IllegalStateException.class,
+                       ConfirmedEmailException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseStatusException handleAppException(RuntimeException ex) {
         return new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
