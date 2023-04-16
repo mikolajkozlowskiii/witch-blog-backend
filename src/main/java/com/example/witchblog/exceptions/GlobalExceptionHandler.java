@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ResponseBody
     @ExceptionHandler({UnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -34,8 +33,6 @@ public class GlobalExceptionHandler {
     public ResponseStatusException handleAppException(RuntimeException ex) {
         return new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
     }
-
-
 }
 
 

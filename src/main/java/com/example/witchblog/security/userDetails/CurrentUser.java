@@ -1,4 +1,4 @@
-package com.example.witchblog.security;
+package com.example.witchblog.security.userDetails;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

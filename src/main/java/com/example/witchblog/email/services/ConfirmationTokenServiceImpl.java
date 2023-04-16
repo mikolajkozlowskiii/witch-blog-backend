@@ -4,20 +4,17 @@ import com.example.witchblog.email.entity.ConfirmationToken;
 import com.example.witchblog.email.repositories.ConfirmationTokenRepository;
 import com.example.witchblog.exceptions.ConfirmedEmailException;
 import com.example.witchblog.models.User;
-import com.example.witchblog.security.services.UserDetailsImpl;
 import com.example.witchblog.services.AuthService;
 import com.example.witchblog.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.FilterOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +23,13 @@ public class ConfirmationTokenServiceImpl {
     private final UserService userService;
     private final EmailSenderService emailSenderService;
     private final ConfirmationTokenRepository confirmationTokenRepository;
+    @Value(value = "${app.mail.expirationTimeInMin}")
+    private int expirationTimeInMin;
+    @Value(value = "${app.mail.confrimationLink}")
+    private String confrimationLink;
     public void saveConfirmationToken(ConfirmationToken token){
         confirmationTokenRepository.save(token);
     }
-
 
     public ConfirmationToken createConfirmationToken(User toUser, long expiresTimeInMinutes){
         String token = UUID.randomUUID().toString();
@@ -44,34 +44,25 @@ public class ConfirmationTokenServiceImpl {
     }
 
     public void sendConfirmationEmail(User toUser){
-        ConfirmationToken confirmationToken = createConfirmationToken(toUser, 15);
+        List<ConfirmationToken> userConfirmationTokens =
+                confirmationTokenRepository.findAllByUserId(toUser.getId());
+
+        checkIfAnyTokenAlreadyConfirmed(userConfirmationTokens);
+
+        ConfirmationToken confirmationToken = createConfirmationToken(toUser, expirationTimeInMin);
         saveConfirmationToken(confirmationToken);
 
-        String link = "https://witchblog.azurewebsites.net/api/v1/auth/confirm?token=";
+        String link = confrimationLink + confirmationToken.getToken();
         emailSenderService.send(toUser.getEmail(), buildEmail(toUser.getFirstName(),
-                link + confirmationToken.getToken()));
+                link));
     }
 
     public void sendConfirmationEmail(String email){
         User currentUser = userService.findUserByEmail(email);
-
-        List<ConfirmationToken> userConfirmationTokens =
-                confirmationTokenRepository.findAllByUserId(currentUser.getId());
-
-        checkIfAnyTokenAlreadyConfirmed(userConfirmationTokens);
-
-        ConfirmationToken confirmationToken = createConfirmationToken(currentUser, 15);
-        saveConfirmationToken(confirmationToken);
-
-        String link = "http://localhost:8080/api/v1/auth/confirm?token=";
-        emailSenderService.send(currentUser.getEmail(), buildEmail(currentUser.getFirstName(),
-                link + confirmationToken.getToken()));
+        sendConfirmationEmail(currentUser);
     }
 
     private static void checkIfAnyTokenAlreadyConfirmed(List<ConfirmationToken> userConfirmationTokens) {
-        for(ConfirmationToken token : userConfirmationTokens){
-            System.out.println("token " + token.getConfirmedAt());
-        }
         if(userConfirmationTokens
                 .stream()
                 .filter(s->!Objects.isNull(s.getConfirmedAt()))
@@ -80,26 +71,18 @@ public class ConfirmationTokenServiceImpl {
         }
     }
 
-    public ConfirmationToken createConfirmationToken(String email, long expiresTimeInMinutes){
-        User currentUser = userService.findUserByEmail(email);
-
-        String token = UUID.randomUUID().toString();
-
-        return ConfirmationToken
-                .builder()
-                .token(token)
-                .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(expiresTimeInMinutes))
-                .user(currentUser)
-                .build();
-    }
-
-
     @Transactional
     public String confirmToken(String token){
-        ConfirmationToken confirmationToken = confirmationTokenRepository
-                .findByToken(token)
-                .orElseThrow(() -> new IllegalStateException("token not found"));
+        ConfirmationToken confirmationToken = findByToken(token);
+        validateToken(confirmationToken);
+
+        setConfirmedAt(token);
+        authService.enableUser(confirmationToken.getUser().getEmail());
+
+        return "user confirmed!";
+    }
+
+    private static void validateToken(ConfirmationToken confirmationToken) {
         if(confirmationToken.getConfirmedAt() != null){
             throw new IllegalStateException("email already confirmed!");
         }
@@ -108,11 +91,13 @@ public class ConfirmationTokenServiceImpl {
         if(expiredAt.isBefore(LocalDateTime.now())){
             throw new IllegalStateException("token expired!");
         }
+    }
 
-        setConfirmedAt(token);
-        authService.enableUser(confirmationToken.getUser().getEmail());
-
-        return "user confirmed!";
+    private ConfirmationToken findByToken(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenRepository
+                .findByToken(token)
+                .orElseThrow(() -> new IllegalStateException("token not found"));
+        return confirmationToken;
     }
 
     public int setConfirmedAt(String token){
@@ -121,6 +106,7 @@ public class ConfirmationTokenServiceImpl {
         );
     }
 
+    // TODO replace that method to read email body from file
     private String buildEmail(String firstNameOfUser, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +

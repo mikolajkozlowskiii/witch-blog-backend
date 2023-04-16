@@ -7,12 +7,18 @@ import com.example.witchblog.payload.request.LoginRequest;
 import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.response.JwtResponse;
 import com.example.witchblog.payload.response.MessageResponse;
+import com.example.witchblog.security.oauth2.GoogleOAuth2UserInfo;
 import com.example.witchblog.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,11 +39,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (!authService.checkUsernameAvailability(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
 
         if (!authService.checkEmailAvailability(signUpRequest.getEmail())) {
             return ResponseEntity
@@ -47,22 +48,25 @@ public class AuthController {
 
         User createdUser = authService.createUser(signUpRequest);
 
-        // TODO REPLACE THOSE 2 LINES ON confirmationTokenService.sendConfirmationEmail();
         confirmationTokenService.sendConfirmationEmail(createdUser);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @GetMapping(path = "confirm")
+    @GetMapping("/oauth2/token")
+    @ResponseStatus(HttpStatus.OK)
+    public void authenticateUser() {}
+
+    @GetMapping(path = "confirmationEmail")
     public ResponseEntity<?> confirmToken(@RequestParam("token") String token){
         return ResponseEntity.ok(confirmationTokenService.confirmToken(token));
     }
 
-    @GetMapping(path = "{email}/sendEmail")
+    @GetMapping(path = "confirmationEmail/{email}")
     public ResponseEntity<?> sendConfrimationEmail(@PathVariable String email){
         confirmationTokenService.sendConfirmationEmail(email);
 
-        return ResponseEntity.ok("email sended to " + email);
+        return ResponseEntity.ok("Email sent to: " + email);
     }
 
 }

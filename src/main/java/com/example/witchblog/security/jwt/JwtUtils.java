@@ -1,7 +1,7 @@
 package com.example.witchblog.security.jwt;
 
 import java.util.Date;
-import com.example.witchblog.security.services.UserDetailsImpl;
+import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +13,11 @@ import io.jsonwebtoken.*;
 @Component
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
-    @Value(value = "${jwttoken.witchblog.jwtSecret}")
+    @Value(value = "${app.tokenJWT.secret}")
     private String jwtSecret;
+    @Value(value = "${app.tokenJWT.expirationTimeInMs}")
+    private int jwtExpirationTimeInMs;
 
-    @Value(value = "${jwttoken.witchblog.jwtExpirationMs}")
-    private int jwtExpirationMs;
-
-    // TOKEN GENERATOR
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -28,13 +25,9 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject((userPrincipal.getId().toString()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationTimeInMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
-    }
-
-    public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public Long getUserIdFromJwtToken(String token) {

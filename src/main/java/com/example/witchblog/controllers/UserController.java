@@ -1,16 +1,16 @@
 package com.example.witchblog.controllers;
 
 import com.example.witchblog.payload.request.SignUpRequest;
+import com.example.witchblog.payload.request.UpdateUserRequest;
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.MessageResponse;
 import com.example.witchblog.payload.response.UserResponse;
-import com.example.witchblog.security.CurrentUser;
-import com.example.witchblog.security.services.UserDetailsImpl;
+import com.example.witchblog.security.userDetails.CurrentUser;
+import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import com.example.witchblog.services.AuthService;
 import com.example.witchblog.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,65 +36,59 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> getCurrentUser(@PathVariable(value = "username") String username){
-        UserResponse userResponse = userService.getUserByUsername(username);
+    public ResponseEntity<UserResponse> getCurrentUser(@PathVariable(value = "email") String email){
+        UserResponse userResponse = userService.getUserByEmail(email);
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/{username}")
+    @PutMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable(value = "username") String username,
-                                                          @Valid @RequestBody SignUpRequest signUpRequest,
+    public ResponseEntity<?> updateUser(@PathVariable(value = "email") String email,
+                                                          @Valid @RequestBody UpdateUserRequest updateUserRequest,
                                                           @CurrentUser UserDetailsImpl currentUser){
-        if (!authService.checkUsernameAvailability(signUpRequest.getUsername()) &&
-                !Objects.equals(currentUser.getUsername(), signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-
-        if (!authService.checkEmailAvailability(signUpRequest.getEmail()) &&
-                !Objects.equals(currentUser.getEmail(), signUpRequest.getEmail())) {
+        System.out.println("czy cos sie dzieje");
+        if (!authService.checkEmailAvailability(updateUserRequest.getEmail()) &&
+                !Objects.equals(currentUser.getEmail(), updateUserRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        UserResponse userResponse = userService.updateUser(signUpRequest, username, currentUser);
+        UserResponse userResponse = userService.updateUser(updateUserRequest, email, currentUser);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/api/v1/users/{username}")
-                .buildAndExpand(userResponse.getUsername())
+                .path("/api/v1/users/{email}")
+                .buildAndExpand(userResponse.getEmail())
                 .toUri();
 
         return ResponseEntity.created(location).body(userResponse);
     }
 
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable(value = "username") String username,
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "email") String email,
                                                           @CurrentUser UserDetailsImpl currentUser){
-        userService.deleteUser(username, currentUser);
+        userService.deleteUser(email, currentUser);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{username}/giveMod")
+    @PutMapping("/{email}/mod")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> giveMod(@PathVariable(value = "username") String username){
-        final ApiResponse apiResponse = userService.giveModerator(username);
+    public ResponseEntity<ApiResponse> giveMod(@PathVariable(value = "email") String email){
+        final ApiResponse apiResponse = userService.giveModerator(email);
 
         return new ResponseEntity< >(apiResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/{username}/removeMod")
+    @DeleteMapping("/{email}/mod")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> removeMode(@PathVariable(value = "username") String username){
-        final ApiResponse apiResponse = userService.removeModerator(username);
+    public ResponseEntity<ApiResponse> removeMode(@PathVariable(value = "email") String email){
+        final ApiResponse apiResponse = userService.removeModerator(email);
 
         return new ResponseEntity< >(apiResponse, HttpStatus.OK);
     }

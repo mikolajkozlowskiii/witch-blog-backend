@@ -1,7 +1,8 @@
-package com.example.witchblog.security.services;
+package com.example.witchblog.security.userDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -12,27 +13,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
 @AllArgsConstructor
 @Builder
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails, OAuth2User {
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private String firstName;
-
     private String lastName;
-
-    private String username;
-
     private String email;
-
     @JsonIgnore
     private String password;
     @JsonIgnore
     private boolean isEnabled;
+    private Map<String, Object> attributes;
 
     private Collection<? extends GrantedAuthority> authorities;
-
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
@@ -44,7 +42,6 @@ public class UserDetailsImpl implements UserDetails {
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .isEnabled(user.isEnabled())
@@ -52,12 +49,31 @@ public class UserDetailsImpl implements UserDetails {
                 .build();
     }
 
+    public static UserDetailsImpl build(User user, Map<String, Object> attributes) {
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+
+        return UserDetailsImpl
+                .builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .lastName(user.getLastName())
+                .isEnabled(user.isEnabled())
+                .authorities(authorities)
+                .attributes(attributes)
+                .build();
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -78,9 +94,13 @@ public class UserDetailsImpl implements UserDetails {
         return password;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -100,6 +120,9 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() { return isEnabled; }
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -109,5 +132,9 @@ public class UserDetailsImpl implements UserDetails {
             return false;
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+    @Override
+    public String getName() {
+        return firstName;
     }
 }

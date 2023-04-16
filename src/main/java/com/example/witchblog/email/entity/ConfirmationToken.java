@@ -1,7 +1,6 @@
 package com.example.witchblog.email.entity;
 
 import com.example.witchblog.models.User;
-import com.example.witchblog.security.services.UserDetailsImpl;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +26,9 @@ public class ConfirmationToken {
     private LocalDateTime expiresAt;
     @Column(nullable = true)
     private LocalDateTime confirmedAt;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(
-            nullable = false,
+            nullable = true,
             name = "user_id"
     )
     private User user;

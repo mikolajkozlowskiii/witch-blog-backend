@@ -1,97 +1,102 @@
 package com.example.witchblog.services.impl;
 
 import com.example.witchblog.exceptions.AppException;
-import com.example.witchblog.exceptions.RoleNotFoundException;
 import com.example.witchblog.exceptions.UnauthorizedException;
 import com.example.witchblog.models.ERole;
 import com.example.witchblog.models.Role;
 import com.example.witchblog.models.User;
 import com.example.witchblog.payload.request.SignUpRequest;
+import com.example.witchblog.payload.request.UpdateUserRequest;
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.UserResponse;
-import com.example.witchblog.repositories.RoleRepository;
 import com.example.witchblog.repositories.UserRepository;
-import com.example.witchblog.security.services.UserDetailsImpl;
+import com.example.witchblog.security.userDetails.UserDetailsImpl;
+import com.example.witchblog.services.RoleService;
 import com.example.witchblog.services.UserService;
 import com.example.witchblog.services.mappers.UserMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
-
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Override
-    public UserResponse getCurrentUser(UserDetailsImpl currentUser) {
-        return userMapper.map(currentUser);
+    public UserResponse getCurrentUser(UserDetailsImpl userDetails) {
+            return UserResponse.builder()
+                    .firstName(userDetails.getFirstName())
+                    .lastName(userDetails.getLastName())
+                    .email(userDetails.getEmail())
+                    .build();
     }
 
     @Override
-    public UserResponse getUserByUsername(String username) {
-        User user = findUserByUsername(username);
-        return userMapper.map(user);
+    public UserResponse getUserByEmail(String email) {
+        return userMapper.map(findUserByEmail(email));
     }
 
     @Override
-    public UserResponse updateUser(SignUpRequest request, String username, UserDetailsImpl currentUser) {
-        User user = findUserByUsername(username);
+    public UserResponse updateUser(UpdateUserRequest request, String email, UserDetailsImpl currentUser) {
+        User user = findUserByEmail(email);
         if(user.getId().equals(currentUser.getId())){
-            long userId = user.getId();
-            Set<Role> userRoles = user.getRoles();
-            user = userMapper.map(request);
-            user.setId(userId);
-            user.setEnabled(true);
-            user.setRoles(userRoles);
+            User updatedUser = userMapper.map(request);
+            updatedUser.setId(user.getId());
+            updatedUser.setEnabled(user.isEnabled());
+            updatedUser.setRoles(user.getRoles());
+            updatedUser.setProvider(user.getProvider());
             return userMapper.map(userRepository.save(user));
         }
-        throw new UnauthorizedException("update not your account");
+        throw new UnauthorizedException("Can't update not your account.");
     }
 
     @Override
-    public boolean deleteUser(String username, UserDetailsImpl currentUser) {
-        User user = findUserByUsername(username);
+    @Transactional
+    public boolean deleteUser(String email, UserDetailsImpl currentUser) {
+        User user = findUserByEmail(email);
         if(user.getId().equals(currentUser.getId()) ||
                 currentUser.getAuthorities().contains(new SimpleGrantedAuthority(ERole.ROLE_ADMIN.name()))){
             userRepository.delete(user);
             return true;
         }
-        throw new UnauthorizedException("delete not your account");
+        throw new UnauthorizedException("Can't delete not your account.");
     }
 
     @Override
-    public ApiResponse giveModerator(String username) {
-        User user = findUserByUsername(username);
-        Role roleModerator = findRoleModerator();
-        if(user.getRoles().contains(roleModerator)){
-            throw new AppException(username + " has already role " + ERole.ROLE_MODERATOR.name());
+    public ApiResponse giveModerator(String email) {
+        User user = findUserByEmail(email);
+
+        Role roleModerator = roleService.getRole(ERole.ROLE_MODERATOR);
+        if(roleService.checkIfUserHasRole(user, roleModerator)){
+            throw new AppException(email + " has already role " + ERole.ROLE_MODERATOR.name());
         }
-        user.getRoles().add(roleRepository.findByName(ERole.ROLE_MODERATOR).orElseThrow(
-                () -> new RoleNotFoundException("Put in DB role 'ROLE_MODERATOR'")));
+
+        user.getRoles().add(roleModerator);
         userRepository.save(user);
 
-        return new ApiResponse(Boolean.TRUE, "Moderator role set to user: " + username);
+        return new ApiResponse(Boolean.TRUE, "Moderator role set to user: " + email);
     }
 
     @Override
-    public ApiResponse removeModerator(String username) {
-        User user = findUserByUsername(username);
-        Role roleModerator = findRoleModerator();
-        if(!user.getRoles().contains(roleModerator)){
-            throw new AppException(username + " hasn't got role " + ERole.ROLE_MODERATOR.name());
+    public ApiResponse removeModerator(String email) {
+        User user = findUserByEmail(email);
+
+        Role roleModerator = roleService.getRole(ERole.ROLE_MODERATOR);
+        if(!roleService.checkIfUserHasRole(user, roleModerator)){
+            throw new AppException(email + " hasn't got role " + ERole.ROLE_MODERATOR.name());
         }
+
         user.getRoles().remove(roleModerator);
         userRepository.save(user);
 
-        return new ApiResponse(Boolean.TRUE, "Moderator role removed from user: " + username);
+        return new ApiResponse(Boolean.TRUE, "Moderator role removed from user: " + email);
     }
 
     @Override
@@ -101,16 +106,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
-    private User findUserByUsername(String username) {
+    @Override
+    public User findUserById(Long id) {
         return userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-    }
-
-    private Role findRoleModerator() {
-        Role roleModerator = roleRepository
-                .findByName(ERole.ROLE_MODERATOR)
-                .orElseThrow(() -> new RoleNotFoundException("Put in DB role 'ROLE_MODERATOR'"));
-        return roleModerator;
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(String.valueOf(id)));
     }
 }
