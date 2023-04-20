@@ -57,7 +57,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public void authenticateUser() {}
 
-    @GetMapping(path = "confirmationEmail")
+    @GetMapping(path = "confirm")
     public ResponseEntity<?> confirmToken(@RequestParam("token") String token){
         return ResponseEntity.ok(confirmationTokenService.confirmToken(token));
     }

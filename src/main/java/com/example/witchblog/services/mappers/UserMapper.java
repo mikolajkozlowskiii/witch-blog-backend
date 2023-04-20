@@ -24,12 +24,20 @@ public class UserMapper {
                 .build();
     }
 
-    public User map(UpdateUserRequest request){
-        return User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .build();
+    public User map(User userToBeUpdated, UpdateUserRequest request){
+        String firstName = request.getFirstName();
+        String lastName = request.getLastName();
+        String password = request.getPassword();
+        if(firstName != null && !firstName.isEmpty()){
+            userToBeUpdated.setFirstName(firstName);
+        }
+        if(lastName != null && !lastName.isEmpty()){
+            userToBeUpdated.setLastName(lastName);
+        }
+        if(password != null && !password.isEmpty()){
+            userToBeUpdated.setPassword(encoder.encode(password));
+        }
+        return userToBeUpdated;
     }
 
     public User newLocalUserMap(SignUpRequest request){

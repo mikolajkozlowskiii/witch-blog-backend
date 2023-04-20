@@ -44,15 +44,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UpdateUserRequest request, String email, UserDetailsImpl currentUser) {
+    public UserResponse updateUser(UpdateUserRequest updateInfoRequest, String email, UserDetailsImpl currentUser) {
         User user = findUserByEmail(email);
         if(user.getId().equals(currentUser.getId())){
-            User updatedUser = userMapper.map(request);
-            updatedUser.setId(user.getId());
-            updatedUser.setEnabled(user.isEnabled());
-            updatedUser.setRoles(user.getRoles());
-            updatedUser.setProvider(user.getProvider());
-            return userMapper.map(userRepository.save(user));
+            User updatedUser = userMapper.map(user, updateInfoRequest);
+            return userMapper.map(userRepository.save(updatedUser));
         }
         throw new UnauthorizedException("Can't update not your account.");
     }

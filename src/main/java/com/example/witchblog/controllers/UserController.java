@@ -1,5 +1,7 @@
 package com.example.witchblog.controllers;
 
+import com.example.witchblog.models.ERole;
+import com.example.witchblog.models.Role;
 import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.request.UpdateUserRequest;
 import com.example.witchblog.payload.response.ApiResponse;
@@ -8,6 +10,7 @@ import com.example.witchblog.payload.response.UserResponse;
 import com.example.witchblog.security.userDetails.CurrentUser;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import com.example.witchblog.services.AuthService;
+import com.example.witchblog.services.RoleService;
 import com.example.witchblog.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final RoleService roleService;
     private final AuthService authService;
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
@@ -49,12 +53,17 @@ public class UserController {
     public ResponseEntity<?> updateUser(@PathVariable(value = "email") String email,
                                                           @Valid @RequestBody UpdateUserRequest updateUserRequest,
                                                           @CurrentUser UserDetailsImpl currentUser){
-        System.out.println("czy cos sie dzieje");
-        if (!authService.checkEmailAvailability(updateUserRequest.getEmail()) &&
+     /*  if (!authService.checkEmailAvailability(updateUserRequest.getEmail()) &&
                 !Objects.equals(currentUser.getEmail(), updateUserRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
+        }*/
+        if (!Objects.equals(currentUser.getEmail(), email)
+                && !currentUser.getAuthorities().contains(roleService.getRole(ERole.ROLE_ADMIN))) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Can't update not your account!"));
         }
 
         UserResponse userResponse = userService.updateUser(updateUserRequest, email, currentUser);
