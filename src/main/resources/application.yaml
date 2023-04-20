@@ -40,6 +40,8 @@ app:
     authorizedRedirectUris:
       - https://witchblog.azurewebsites.net/api/v1/test/all
       - https://witchblog.azurewebsites.net/api/v1/auth/oauth2/token
+      - http://localhost:3000
+      - http://localhost:3000/users/profile
 
   mail:
     expirationTimeInMin: 15
