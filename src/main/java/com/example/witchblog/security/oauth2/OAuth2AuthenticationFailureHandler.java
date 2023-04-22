@@ -1,5 +1,6 @@
 package com.example.witchblog.security.oauth2;
 
+import com.example.witchblog.exceptions.AppException;
 import com.example.witchblog.util.CookieUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

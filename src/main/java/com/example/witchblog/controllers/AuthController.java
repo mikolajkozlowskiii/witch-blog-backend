@@ -5,6 +5,7 @@ import com.example.witchblog.email.services.ConfirmationTokenServiceImpl;
 import com.example.witchblog.models.User;
 import com.example.witchblog.payload.request.LoginRequest;
 import com.example.witchblog.payload.request.SignUpRequest;
+import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.JwtResponse;
 import com.example.witchblog.payload.response.MessageResponse;
 import com.example.witchblog.security.oauth2.GoogleOAuth2UserInfo;
@@ -17,7 +18,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Map;
 
 
@@ -50,16 +53,16 @@ public class AuthController {
 
         confirmationTokenService.sendConfirmationEmail(createdUser);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/users/{email}")
+                .buildAndExpand(createdUser.getEmail()).toUri();
+
+        return ResponseEntity.created(location).body(new ApiResponse(Boolean.TRUE, "User registered," +
+                " to enable your account confirm your email in 15 min."));
     }
 
-    @GetMapping("/oauth2/token")
-    @ResponseStatus(HttpStatus.OK)
-    public void authenticateUser() {}
-
     @GetMapping(path = "confirm")
-    public ResponseEntity<?> confirmToken(@RequestParam("token") String token){
-        return ResponseEntity.ok(confirmationTokenService.confirmToken(token));
+    public ResponseEntity<ApiResponse> confirmToken(@RequestParam("token") String token){
+        return ResponseEntity.ok(new ApiResponse(Boolean.TRUE, confirmationTokenService.confirmToken(token)));
     }
 
     @GetMapping(path = "confirmationEmail/{email}")
@@ -68,5 +71,9 @@ public class AuthController {
 
         return ResponseEntity.ok("Email sent to: " + email);
     }
+
+    @GetMapping("/oauth2/token")
+    @ResponseStatus(HttpStatus.OK)
+    public void authenticateUser() {}
 
 }

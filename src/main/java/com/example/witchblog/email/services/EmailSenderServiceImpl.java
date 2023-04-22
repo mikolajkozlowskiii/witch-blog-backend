@@ -3,6 +3,7 @@ package com.example.witchblog.email.services;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmailSenderServiceImpl implements EmailSenderService {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailSenderServiceImpl.class);
     private final JavaMailSender mailSender;

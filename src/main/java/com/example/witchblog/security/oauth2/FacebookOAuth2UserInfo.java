@@ -1,6 +1,5 @@
 package com.example.witchblog.security.oauth2;
 
-import com.example.witchblog.security.oauth2.OAuth2UserInfo;
 
 import java.util.Map;
 
@@ -16,7 +15,8 @@ public class FacebookOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getName() {
-        return (String) attributes.get("name");
+        System.out.println(attributes);
+        return (String) attributes.get("first_name");
     }
 
     @Override

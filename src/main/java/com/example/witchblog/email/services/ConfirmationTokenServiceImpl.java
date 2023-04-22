@@ -2,7 +2,7 @@ package com.example.witchblog.email.services;
 
 import com.example.witchblog.email.entity.ConfirmationToken;
 import com.example.witchblog.email.repositories.ConfirmationTokenRepository;
-import com.example.witchblog.exceptions.ConfirmedEmailException;
+import com.example.witchblog.exceptions.EmailConfirmationException;
 import com.example.witchblog.models.User;
 import com.example.witchblog.services.AuthService;
 import com.example.witchblog.services.UserService;
@@ -67,41 +67,42 @@ public class ConfirmationTokenServiceImpl {
                 .stream()
                 .filter(s->!Objects.isNull(s.getConfirmedAt()))
                 .toList().size()>0){
-            throw new ConfirmedEmailException();
+            throw new EmailConfirmationException();
         }
     }
 
     @Transactional
     public String confirmToken(String token){
         ConfirmationToken confirmationToken = findByToken(token);
+
         validateToken(confirmationToken);
 
         setConfirmedAt(token);
         authService.enableUser(confirmationToken.getUser().getEmail());
 
-        return "user confirmed!";
+        return "User's email confirmed!";
     }
 
     private static void validateToken(ConfirmationToken confirmationToken) {
         if(confirmationToken.getConfirmedAt() != null){
-            throw new IllegalStateException("email already confirmed!");
+            throw new EmailConfirmationException("Email has already been confirmed!");
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
         if(expiredAt.isBefore(LocalDateTime.now())){
-            throw new IllegalStateException("token expired!");
+            throw new EmailConfirmationException("Email confirmation has expired!");
         }
     }
 
     private ConfirmationToken findByToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenRepository
                 .findByToken(token)
-                .orElseThrow(() -> new IllegalStateException("token not found"));
+                .orElseThrow(() -> new EmailConfirmationException("Email confirmation has expired!"));
         return confirmationToken;
     }
 
-    public int setConfirmedAt(String token){
-        return confirmationTokenRepository.updateConfirmedAt(
+    public void setConfirmedAt(String token){
+        confirmationTokenRepository.updateConfirmedAt(
                 token, LocalDateTime.now()
         );
     }

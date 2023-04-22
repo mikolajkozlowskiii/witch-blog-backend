@@ -7,6 +7,7 @@ import com.example.witchblog.models.User;
 import com.example.witchblog.repositories.UserRepository;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import com.example.witchblog.services.RoleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -21,11 +22,10 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleService roleService;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {

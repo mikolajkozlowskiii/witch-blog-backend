@@ -1,6 +1,8 @@
 package com.example.witchblog.security.jwt;
 
 import java.util.Date;
+
+import com.example.witchblog.exceptions.JwtTokenException;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

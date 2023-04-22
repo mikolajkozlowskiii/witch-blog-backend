@@ -2,6 +2,7 @@ package com.example.witchblog.controllers;
 
 import com.example.witchblog.models.ERole;
 import com.example.witchblog.models.Role;
+import com.example.witchblog.models.User;
 import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.request.UpdateUserRequest;
 import com.example.witchblog.payload.response.ApiResponse;
@@ -53,12 +54,6 @@ public class UserController {
     public ResponseEntity<?> updateUser(@PathVariable(value = "email") String email,
                                                           @Valid @RequestBody UpdateUserRequest updateUserRequest,
                                                           @CurrentUser UserDetailsImpl currentUser){
-     /*  if (!authService.checkEmailAvailability(updateUserRequest.getEmail()) &&
-                !Objects.equals(currentUser.getEmail(), updateUserRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }*/
         if (!Objects.equals(currentUser.getEmail(), email)
                 && !currentUser.getAuthorities().contains(roleService.getRole(ERole.ROLE_ADMIN))) {
             return ResponseEntity
@@ -83,7 +78,8 @@ public class UserController {
                                                           @CurrentUser UserDetailsImpl currentUser){
         userService.deleteUser(email, currentUser);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(Boolean.TRUE,
+                "User: %s has been deleted.".formatted(email)),HttpStatus.OK);
     }
 
     @PutMapping("/{email}/mod")
