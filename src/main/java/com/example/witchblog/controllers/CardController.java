@@ -2,7 +2,6 @@ package com.example.witchblog.controllers;
 
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.CardResponse;
-import com.example.witchblog.repositories.CardRepository;
 import com.example.witchblog.services.CardService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,5 +50,10 @@ public class CardController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(apiResponse);
+    }
+
+    @PostMapping("/tarot")
+    public ResponseEntity<List<String>> tarot(@RequestParam("image")MultipartFile file) throws IOException{
+            return ResponseEntity.ok(cardService.tarotMock(file));
     }
 }

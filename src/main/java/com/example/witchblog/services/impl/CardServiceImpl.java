@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +70,20 @@ public class CardServiceImpl implements CardService {
                 .findByName(name)
                 .orElseThrow(() -> new CardNotFoundException("Card: " + name + " doesn't exist in DB."));
         return card;
+    }
+
+    public List<String> tarotMock(MultipartFile file){
+            List<CardResponse> cardResponses = new ArrayList<>();
+
+            cardResponses.add(getCardInfoByName("kokos.jpg"));
+            cardResponses.add(getCardInfoByName("betoniarz.jpg"));
+            cardResponses.add(getCardInfoByName("dahmer.jpg"));
+
+            List<String> base64CardsImages = new ArrayList<>();
+            for (CardResponse card : cardResponses) {
+                String base64Image = Base64.getEncoder().encodeToString(card.getImage());
+                base64CardsImages.add(base64Image);
+            }
+            return base64CardsImages;
     }
 }
