@@ -1,6 +1,5 @@
 package com.example.witchblog.controllers;
 
-import com.example.witchblog.email.entity.ConfirmationToken;
 import com.example.witchblog.email.services.ConfirmationTokenServiceImpl;
 import com.example.witchblog.models.User;
 import com.example.witchblog.payload.request.LoginRequest;
@@ -8,20 +7,15 @@ import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.JwtResponse;
 import com.example.witchblog.payload.response.MessageResponse;
-import com.example.witchblog.security.oauth2.GoogleOAuth2UserInfo;
 import com.example.witchblog.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Map;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
