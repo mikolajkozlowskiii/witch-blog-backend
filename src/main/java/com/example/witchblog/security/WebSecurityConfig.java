@@ -69,7 +69,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/test/**").permitAll()
                                 .requestMatchers("/auth/**", "/oauth2/**").permitAll()
                                 .requestMatchers("/api/v1/cards/**").permitAll()
-                                .requestMatchers("/api/v1/cards").permitAll()
+                                .requestMatchers("/api/v1/tarot/**").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**")
                                 .hasAnyRole("USER","MODERATOR", "ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/api/v1/users/**")

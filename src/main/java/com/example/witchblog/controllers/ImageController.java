@@ -2,7 +2,7 @@ package com.example.witchblog.controllers;
 
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.CardResponse;
-import com.example.witchblog.services.CardService;
+import com.example.witchblog.services.ImageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -17,11 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/cards")
 @RequiredArgsConstructor
-public class CardController {
-    private final CardService cardService;
+public class ImageController {
+    private final ImageService imageService;
     @PostMapping()
     public ResponseEntity<ApiResponse> uploadCard(@RequestParam("image")MultipartFile file) throws IOException {
-        ApiResponse apiResponse = cardService.uploadCard(file);
+        ApiResponse apiResponse = imageService.uploadCard(file);
 
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
@@ -29,14 +29,14 @@ public class CardController {
     @Transactional
     @GetMapping(path = {"{name}/info"})
     public ResponseEntity<CardResponse> getCardDetails(@PathVariable("name") String name) throws IOException {
-        final CardResponse card = cardService.getCardInfoByName(name);
+        final CardResponse card = imageService.getCardInfoByName(name);
 
         return ResponseEntity.ok(card);
     }
 
     @GetMapping(path = {"{name}"})
     public ResponseEntity<byte[]> getCard(@PathVariable("name") String name) throws IOException {
-        final CardResponse card = cardService.getCardInfoByName(name);
+        final CardResponse card = imageService.getCardInfoByName(name);
 
         return ResponseEntity
                 .ok()
@@ -46,7 +46,7 @@ public class CardController {
 
     @DeleteMapping(path = {"{name}"})
     public ResponseEntity<ApiResponse> deleteCard(@PathVariable("name") String name) throws IOException {
-        ApiResponse apiResponse = cardService.deleteCardByName(name);
+        ApiResponse apiResponse = imageService.deleteCardByName(name);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(apiResponse);
@@ -54,6 +54,6 @@ public class CardController {
 
     @PostMapping("/tarot")
     public ResponseEntity<List<String>> tarot(@RequestParam("image")MultipartFile file) throws IOException{
-            return ResponseEntity.ok(cardService.tarotMock(file));
+            return ResponseEntity.ok(imageService.tarotMock(file));
     }
 }

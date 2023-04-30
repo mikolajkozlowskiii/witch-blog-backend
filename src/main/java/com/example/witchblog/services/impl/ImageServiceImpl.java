@@ -1,18 +1,14 @@
 package com.example.witchblog.services.impl;
 
 import com.example.witchblog.exceptions.CardNotFoundException;
-import com.example.witchblog.models.Card;
+import com.example.witchblog.models.tarot.Image;
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.CardResponse;
 import com.example.witchblog.repositories.CardRepository;
-import com.example.witchblog.services.CardService;
+import com.example.witchblog.services.ImageService;
 import com.example.witchblog.util.ImageUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,16 +16,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CardServiceImpl implements CardService {
+public class ImageServiceImpl implements ImageService {
     private CardRepository cardRepository;
     @Override
     public ApiResponse uploadCard(MultipartFile file) throws IOException {
         cardRepository.save(
-                Card.builder()
+                Image.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .image(ImageUtils.compressImage(file.getBytes())).build()
@@ -42,34 +37,34 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardResponse getCardInfoByName(String name) {
-        final Card card = findCardByName(name);
+        final Image image = findCardByName(name);
 
         return CardResponse.builder()
-                .name(card.getName())
-                .type(card.getType())
-                .image(ImageUtils.decompressImage(card.getImage())).build();
+                .name(image.getName())
+                .type(image.getType())
+                .image(ImageUtils.decompressImage(image.getImage())).build();
     }
 
     @Override
     @Transactional
     public byte[] getCardViewByName(String name) {
-        final Card card  = findCardByName(name);
+        final Image image = findCardByName(name);
 
-        return ImageUtils.decompressImage(card.getImage());
+        return ImageUtils.decompressImage(image.getImage());
     }
 
     @Override
     public ApiResponse deleteCardByName(String name) {
-        final Card card  = findCardByName(name);
-        cardRepository.delete(card);
+        final Image image = findCardByName(name);
+        cardRepository.delete(image);
         return new ApiResponse(Boolean.TRUE, "Card: " + name + " deleted successfully.");
     }
 
-    private Card findCardByName(String name) {
-        final Card card = cardRepository
+    private Image findCardByName(String name) {
+        final Image image = cardRepository
                 .findByName(name)
                 .orElseThrow(() -> new CardNotFoundException("Card: " + name + " doesn't exist in DB."));
-        return card;
+        return image;
     }
 
     public List<String> tarotMock(MultipartFile file){

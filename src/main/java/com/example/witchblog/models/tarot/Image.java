@@ -1,17 +1,17 @@
-package com.example.witchblog.models;
+package com.example.witchblog.models.tarot;
 
 import jakarta.persistence.*;
 
 import lombok.*;
 
 @Entity
-@Table(	name = "cards")
+@Table(	name = "images")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class Card {
+public class Image {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

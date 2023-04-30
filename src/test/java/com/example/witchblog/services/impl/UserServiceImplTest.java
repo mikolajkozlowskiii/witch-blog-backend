@@ -1,5 +1,6 @@
 package com.example.witchblog.services.impl;
 
+import com.example.witchblog.exceptions.UserNotFoundException;
 import com.example.witchblog.models.ERole;
 import com.example.witchblog.models.Role;
 import com.example.witchblog.models.User;
@@ -30,13 +31,10 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
     @Mock
     private UserMapper userMapper;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private RoleService roleService;
-
     private User user;
     private UserDetailsImpl userDetails;
 
@@ -57,36 +55,47 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("getCurrentUser returns UserResponse with correct data")
-    public void getCurrentUser_CurrentUser_ReturnsUserResponse() {
+    public void findCurrentUser_CurrentUser_ReturnsUserResponse() {
         UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(),user.getLastName());
-        UserResponse actualResponse = userService.getCurrentUser(userDetails);
+        UserResponse actualResponse = userService.findCurrentUserResponse(userDetails);
 
         Assertions.assertEquals(expectedResponse, actualResponse);
     }
     @Test
-    public void getUserByEmail_EmailFounded_ReturnsUserResponse() {
+    public void findUserByEmail_EmailFounded_ReturnsUserResponse() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(userMapper.map(user)).thenReturn(new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName()));
 
         UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName());
-        UserResponse actualResponse = userService.getUserByEmail(user.getEmail());
+        UserResponse actualResponse = userService.findUserResponseByEmail(user.getEmail());
 
         Assertions.assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    public void getUserByEmail_EmailNotFounded_ThrowsUserNotFoundException() {
+    public void findUserByEmail_EmailNotFounded_ThrowsUserNotFoundException() {
         String emailNotFoundInRepo = "Email not founded in repo";
         when(userRepository.findByEmail(emailNotFoundInRepo)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.getUserByEmail(emailNotFoundInRepo));
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.findUserResponseByEmail(emailNotFoundInRepo));
     }
     @Test
-    void getCurrentUser() {
+    void findCurrentUser_UserDetailsValid_ReturnsUserResponse() {
+        UserResponse expectedResponse = UserResponse
+                .builder()
+                .firstName(userDetails.getFirstName())
+                .lastName(userDetails.getLastName())
+                .email(userDetails.getEmail())
+                .build();
+
+        UserResponse acutalResponse = userService.findCurrentUserResponse(userDetails);
+
+        Assertions.assertEquals(expectedResponse, acutalResponse);
     }
 
     @Test
-    void getUserByEmail() {
+    void findCurrentUser_UserDetailsIsNull_ThrowsIllegalArgumentException() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.findCurrentUserResponse(null));
     }
 
     @Test
@@ -106,10 +115,45 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findUserByEmail() {
+    void findUserResponseByEmail() {
+
+    }
+
+    @Test
+    void findUserByEmail_EmailBelongsToUser_ReturnsUser() {
+        final User expectedUser = user;
+        final String usersEmail = user.getEmail();
+        when(userRepository.findByEmail(usersEmail)).thenReturn(Optional.of(user));
+
+        final User actualUser = userService.findUserByEmail(usersEmail);
+
+        Assertions.assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void findUserByEmail_EmailDoesntBelongToAnyUser_ThrownUserNotFoundException() {
+        final String emailNotFoundInRepo = user.getEmail();
+        when(userRepository.findByEmail(emailNotFoundInRepo)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserByEmail(emailNotFoundInRepo));
     }
 
     @Test
     void findUserById() {
+        final User expectedUser = user;
+        final Long userId = user.getId();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        final User actualUser = userService.findUserById(userId);
+
+        Assertions.assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void findUserByEmail22() {
+        final Long userIdNotInRepo = 123L;
+        when(userRepository.findById(userIdNotInRepo)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserById(userIdNotInRepo));
     }
 }

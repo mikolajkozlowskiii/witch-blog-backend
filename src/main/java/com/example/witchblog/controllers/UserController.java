@@ -1,9 +1,6 @@
 package com.example.witchblog.controllers;
 
 import com.example.witchblog.models.ERole;
-import com.example.witchblog.models.Role;
-import com.example.witchblog.models.User;
-import com.example.witchblog.payload.request.SignUpRequest;
 import com.example.witchblog.payload.request.UpdateUserRequest;
 import com.example.witchblog.payload.response.ApiResponse;
 import com.example.witchblog.payload.response.MessageResponse;
@@ -36,7 +33,7 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity<UserResponse> getCurrentUser(@CurrentUser UserDetailsImpl currentUser){
-        UserResponse userResponse = userService.getCurrentUser(currentUser);
+        UserResponse userResponse = userService.findCurrentUserResponse(currentUser);
         System.out.println(userResponse);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
@@ -44,7 +41,7 @@ public class UserController {
     @GetMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getCurrentUser(@PathVariable(value = "email") String email){
-        UserResponse userResponse = userService.getUserByEmail(email);
+        UserResponse userResponse = userService.findUserResponseByEmail(email);
 
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }

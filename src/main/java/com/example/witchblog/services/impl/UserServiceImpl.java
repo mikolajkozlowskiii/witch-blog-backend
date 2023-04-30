@@ -2,6 +2,7 @@ package com.example.witchblog.services.impl;
 
 import com.example.witchblog.exceptions.AppException;
 import com.example.witchblog.exceptions.UnauthorizedException;
+import com.example.witchblog.exceptions.UserNotFoundException;
 import com.example.witchblog.models.ERole;
 import com.example.witchblog.models.Role;
 import com.example.witchblog.models.User;
@@ -20,6 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -30,7 +32,10 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Override
-    public UserResponse getCurrentUser(UserDetailsImpl userDetails) {
+    public UserResponse findCurrentUserResponse(UserDetailsImpl userDetails) {
+            if(Objects.isNull(userDetails)){
+                throw new IllegalArgumentException("UserDetails instance can't be null");
+            }
             return UserResponse.builder()
                     .firstName(userDetails.getFirstName())
                     .lastName(userDetails.getLastName())
@@ -39,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserByEmail(String email) {
+    public UserResponse findUserResponseByEmail(String email) {
         return userMapper.map(findUserByEmail(email));
     }
 
@@ -99,13 +104,13 @@ public class UserServiceImpl implements UserService {
     public User findUserByEmail(String email) {
         return userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 
     @Override
     public User findUserById(Long id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(String.valueOf(id)));
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
     }
 }
