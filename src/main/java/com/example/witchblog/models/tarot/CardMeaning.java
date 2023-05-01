@@ -1,6 +1,5 @@
 package com.example.witchblog.models.tarot;
 
-import com.example.witchblog.models.tarot.TarotCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,12 +22,6 @@ public class CardMeaning {
     private List<String> light;
     @ElementCollection
     private List<String> shadow;
-    /*
-    @OneToOne(orphanRemoval = true)
-    @JoinTable(name = "cards_meanings_tarotCard",
-            joinColumns = @JoinColumn(name = "cardMeaning_null"),
-            inverseJoinColumns = @JoinColumn(name = "tarotCard_id"))
-    private TarotCard tarotCard;*/
 
 }
 
