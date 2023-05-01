@@ -31,6 +31,12 @@ public class TarotCardController {
         return new ResponseEntity<>(tarotCards, HttpStatus.CREATED);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTarotCards(){
+        final List<TarotCard> tarotCard = tarotCardService.findAll();
+        return ResponseEntity.ok(tarotCard);
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getTarotCardById(@PathVariable Long id){
         final TarotCard tarotCard = tarotCardService.findCardById(id);
