@@ -1,5 +1,7 @@
 package com.example.witchblog.models.tarot;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,9 +16,11 @@ import java.util.Map;
 @Builder
 @ToString
 @Table(name = "tarot_cards")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TarotCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = "name")
@@ -63,9 +67,18 @@ public class TarotCard {
     @Column(name = "mythical_spiritual")
     private String mythicalSpiritual;
 
+    @JsonProperty("Astrology")
+    @Column(name = "astrology")
+    private String astrology;
+
+    @JsonProperty("Affirmation")
+    @Column(name = "affirmation")
+    private String affirmation;
+
     @JsonProperty("Questions to Ask")
     @ElementCollection
     @Column(name = "question")
     @CollectionTable(name = "tarot_card_questions", joinColumns = @JoinColumn(name = "card_id"))
     private List<String> questionsToAsk;
+
 }

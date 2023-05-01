@@ -9,7 +9,7 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
-public class CardResponse {
+public class ImageResponse {
     private String name;
     private String type;
     private byte[] image;

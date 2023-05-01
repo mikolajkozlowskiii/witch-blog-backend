@@ -2,10 +2,12 @@ package com.example.witchblog.services.impl;
 
 import com.example.witchblog.exceptions.CardNotFoundException;
 import com.example.witchblog.models.tarot.Image;
+import com.example.witchblog.models.tarot.TarotCard;
 import com.example.witchblog.payload.response.ApiResponse;
-import com.example.witchblog.payload.response.CardResponse;
-import com.example.witchblog.repositories.CardRepository;
+import com.example.witchblog.payload.response.ImageResponse;
+import com.example.witchblog.repositories.ImageRepository;
 import com.example.witchblog.services.ImageService;
+import com.example.witchblog.services.TarotCardService;
 import com.example.witchblog.util.ImageUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -13,17 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private CardRepository cardRepository;
+    private ImageRepository imageRepository;
+    private TarotCardService tarotCardService;
     @Override
-    public ApiResponse uploadCard(MultipartFile file) throws IOException {
-        cardRepository.save(
+    public ApiResponse uploadImage(MultipartFile file) throws IOException {
+        imageRepository.save(
                 Image.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
@@ -35,11 +37,24 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    @Transactional
-    public CardResponse getCardInfoByName(String name) {
-        final Image image = findCardByName(name);
+    public ApiResponse uploadImage(MultipartFile file, String cardName) throws IOException {
+        imageRepository.save(
+                Image.builder()
+                        .name(file.getOriginalFilename())
+                        .type(file.getContentType())
+                        .image(ImageUtils.compressImage(file.getBytes())).build()
+        );
 
-        return CardResponse.builder()
+        return new ApiResponse(Boolean.TRUE, "Card " +
+                file.getOriginalFilename() + " uploaded successfully.");
+    }
+
+    @Override
+    @Transactional
+    public ImageResponse getImageInfoByName(String name) {
+        final Image image = findImageByName(name);
+
+        return ImageResponse.builder()
                 .name(image.getName())
                 .type(image.getType())
                 .image(ImageUtils.decompressImage(image.getImage())).build();
@@ -47,38 +62,58 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public byte[] getCardViewByName(String name) {
-        final Image image = findCardByName(name);
+    public byte[] getImageViewByName(String name) {
+        final Image image = findImageByName(name);
 
         return ImageUtils.decompressImage(image.getImage());
     }
 
     @Override
-    public ApiResponse deleteCardByName(String name) {
-        final Image image = findCardByName(name);
-        cardRepository.delete(image);
+    public ApiResponse deleteImageByName(String name) {
+        final Image image = findImageByName(name);
+        imageRepository.delete(image);
         return new ApiResponse(Boolean.TRUE, "Card: " + name + " deleted successfully.");
     }
 
-    private Image findCardByName(String name) {
-        final Image image = cardRepository
+    @Override
+    public ImageResponse getImageResponseByCardName(String tarotCardName) {
+        TarotCard tarotCard = tarotCardService.findCardByName(tarotCardName);
+        Image image = findImageByName(tarotCard.getImg());
+        return ImageResponse.builder()
+                .name(image.getName())
+                .type(image.getType())
+                .image(ImageUtils.decompressImage(image.getImage())).build();
+    }
+
+    @Override
+    public String getBase64ImageByCardName(String tarotCardName) {
+        TarotCard tarotCard = tarotCardService.findCardByName(tarotCardName);
+        Image image = findImageByName(tarotCard.getName());
+        return convertImageToBase64(image);
+    }
+
+    @Override
+    public List<String> getBase64ImagesByCardName(List<String> tarotCardsNames) {
+        List<TarotCard> tarotCards = tarotCardsNames
+                .stream()
+                .map(s -> tarotCardService.findCardByName(s))
+                .toList();
+
+        return tarotCards
+                .stream()
+                .map(s->findImageByName(s.getImg()))
+                .map(this::convertImageToBase64)
+                .toList();
+    }
+
+    private String convertImageToBase64(Image image) {
+        return Base64.getEncoder().encodeToString(image.getImage());
+    }
+
+    private Image findImageByName(String name) {
+        final Image image = imageRepository
                 .findByName(name)
                 .orElseThrow(() -> new CardNotFoundException("Card: " + name + " doesn't exist in DB."));
         return image;
-    }
-
-    public List<String> tarotMock(MultipartFile file){
-            List<CardResponse> cardResponses = new ArrayList<>();
-
-            cardResponses.add(getCardInfoByName("kokos.jpg"));
-            cardResponses.add(getCardInfoByName("betoniarz.jpg"));
-            cardResponses.add(getCardInfoByName("dahmer.jpg"));
-
-            List<String> base64CardsImages = new ArrayList<>();
-            for (CardResponse card : cardResponses) {
-                String base64Image = Base64.getEncoder().encodeToString(card.getImage());
-                base64CardsImages.add(base64Image);
-            }
-            return base64CardsImages;
     }
 }
