@@ -106,8 +106,9 @@ public class ImageServiceImpl implements ImageService {
                 .toList();
     }
 
-    private String convertImageToBase64(Image image) {
-        return Base64.getEncoder().encodeToString(image.getImage());
+    private String convertImageToBase64(Image imageInfo) {
+        byte[] decompressedImage = ImageUtils.decompressImage(imageInfo.getImage());
+        return Base64.getEncoder().encodeToString(decompressedImage);
     }
 
     private Image findImageByName(String name) {
