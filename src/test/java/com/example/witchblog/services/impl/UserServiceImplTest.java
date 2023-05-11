@@ -57,7 +57,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("getCurrentUser returns UserResponse with correct data")
     public void findCurrentUser_CurrentUser_ReturnsUserResponse() {
-        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(),user.getLastName());
+        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(),user.getLastName(), user.getBirthDate());
         UserResponse actualResponse = userService.findCurrentUserResponse(userDetails);
 
         Assertions.assertEquals(expectedResponse, actualResponse);
@@ -65,9 +65,9 @@ class UserServiceImplTest {
     @Test
     public void findUserByEmail_EmailFounded_ReturnsUserResponse() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-        when(userMapper.map(user)).thenReturn(new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName()));
+        when(userMapper.map(user)).thenReturn(new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate()));
 
-        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName());
+        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate());
         UserResponse actualResponse = userService.findUserResponseByEmail(user.getEmail());
 
         Assertions.assertEquals(expectedResponse, actualResponse);
@@ -78,7 +78,7 @@ class UserServiceImplTest {
         String emailNotFoundInRepo = "Email not founded in repo";
         when(userRepository.findByEmail(emailNotFoundInRepo)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.findUserResponseByEmail(emailNotFoundInRepo));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUserResponseByEmail(emailNotFoundInRepo));
     }
     @Test
     void findCurrentUser_UserDetailsValid_ReturnsUserResponse() {
