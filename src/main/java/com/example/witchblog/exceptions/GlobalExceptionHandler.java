@@ -24,9 +24,9 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({UsernameNotFoundException.class,
-                       UserNotFoundException.class,
                        RoleNotFoundException.class,
-                       CardNotFoundException.class})
+                       CardNotFoundException.class,
+                       UserNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseStatusException handleUsernameNotFoundException(RuntimeException ex) {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);

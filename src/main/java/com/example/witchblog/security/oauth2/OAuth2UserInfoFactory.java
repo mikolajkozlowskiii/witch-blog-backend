@@ -1,6 +1,6 @@
 package com.example.witchblog.security.oauth2;
 
-import com.example.witchblog.models.AuthProvider;
+import com.example.witchblog.entity.users.AuthProvider;
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {

@@ -1,14 +1,15 @@
 package com.example.witchblog.services.impl;
 
 import com.example.witchblog.exceptions.UserNotFoundException;
-import com.example.witchblog.models.ERole;
-import com.example.witchblog.models.Role;
-import com.example.witchblog.models.User;
-import com.example.witchblog.payload.response.UserResponse;
-import com.example.witchblog.repositories.UserRepository;
+import com.example.witchblog.entity.users.ERole;
+import com.example.witchblog.entity.users.Role;
+import com.example.witchblog.entity.users.User;
+import com.example.witchblog.dto.users.response.UserResponse;
+import com.example.witchblog.repositories.users.UserRepository;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
-import com.example.witchblog.services.RoleService;
-import com.example.witchblog.services.mappers.UserMapper;
+import com.example.witchblog.services.users.RoleService;
+import com.example.witchblog.services.users.impl.UserServiceImpl;
+import com.example.witchblog.services.users.mappers.UserMapper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

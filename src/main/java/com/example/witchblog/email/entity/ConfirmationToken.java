@@ -1,6 +1,6 @@
 package com.example.witchblog.email.entity;
 
-import com.example.witchblog.models.User;
+import com.example.witchblog.entity.users.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

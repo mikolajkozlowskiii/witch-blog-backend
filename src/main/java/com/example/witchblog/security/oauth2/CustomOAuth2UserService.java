@@ -1,14 +1,13 @@
 package com.example.witchblog.security.oauth2;
 
 
-import com.example.witchblog.models.AuthProvider;
-import com.example.witchblog.models.Role;
-import com.example.witchblog.models.User;
-import com.example.witchblog.repositories.UserRepository;
+import com.example.witchblog.entity.users.AuthProvider;
+import com.example.witchblog.entity.users.Role;
+import com.example.witchblog.entity.users.User;
+import com.example.witchblog.repositories.users.UserRepository;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
-import com.example.witchblog.services.RoleService;
+import com.example.witchblog.services.users.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
