@@ -1,5 +1,7 @@
 package com.example.witchblog.security.userDetails;
 
+import com.example.witchblog.exceptions.EmailConfirmationException;
+import com.example.witchblog.exceptions.NotConfirmedEmailException;
 import com.example.witchblog.models.User;
 import com.example.witchblog.repositories.UserRepository;
 import com.example.witchblog.security.userDetails.UserDetailsImpl;
@@ -31,9 +33,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private User findUserByEmail(String email) {
-        return userRepository
+        User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
+        checkIsUserEnabled(user);
+        return user;
+    }
+
+    private static void checkIsUserEnabled(User user) {
+        if(!user.isEnabled()){
+            throw new NotConfirmedEmailException(user.getEmail());
+        }
     }
 
 

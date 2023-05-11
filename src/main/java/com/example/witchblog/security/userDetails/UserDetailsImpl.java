@@ -119,7 +119,9 @@ public class UserDetailsImpl implements UserDetails, OAuth2User {
     }
 
     @Override
-    public boolean isEnabled() { return isEnabled; }
+    public boolean isEnabled() {
+        return isEnabled;
+    }
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
