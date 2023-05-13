@@ -8,6 +8,7 @@ import com.example.witchblog.security.userDetails.UserDetailsImpl;
 
 public interface UserService {
     UserResponse findCurrentUserResponse(UserDetailsImpl currentUser);
+    User findCurrentUser(UserDetailsImpl currentUser);
     UserResponse findUserResponseByEmail(String email);
     UserResponse updateUser(UpdateUserRequest updatedUser, String username, UserDetailsImpl currentUser);
     boolean deleteUser(String username, UserDetailsImpl currentUser);

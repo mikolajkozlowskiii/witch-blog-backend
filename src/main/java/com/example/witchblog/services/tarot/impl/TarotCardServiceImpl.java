@@ -1,20 +1,28 @@
 package com.example.witchblog.services.tarot.impl;
 
+import com.example.witchblog.entity.tarot.UserDivinationsHistory;
+import com.example.witchblog.entity.users.User;
 import com.example.witchblog.exceptions.CardNotFoundException;
 import com.example.witchblog.entity.tarot.TarotCard;
 import com.example.witchblog.repositories.tarot.TarotCardRepository;
+import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import com.example.witchblog.services.tarot.TarotCardService;
+import com.example.witchblog.services.tarot.UserDivinationsHistoryService;
+import com.example.witchblog.services.users.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class TarotCardServiceImpl implements TarotCardService {
     private TarotCardRepository tarotCardRepository;
+    private UserDivinationsHistoryService userDivinationsHistoryService;
 
     @Override
     public TarotCard save(TarotCard card) {
@@ -38,6 +46,13 @@ public class TarotCardServiceImpl implements TarotCardService {
                 .distinct()
                 .limit(numOfCards)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TarotCard> generateDivinationForUser(UserDetailsImpl currentUser, int numOfCards) {
+        List<TarotCard> tarotCards = getRandomCards(numOfCards);
+        userDivinationsHistoryService.saveUserDivination(currentUser, new HashSet<>(tarotCards));
+        return tarotCards;
     }
 
     @Override

@@ -33,18 +33,29 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
-    @ExceptionHandler({AppException.class,
-                       IllegalStateException.class,
-                       EmailConfirmationException.class,
-                        NotConfirmedEmailException.class})
+    @ExceptionHandler({
+            AppException.class,
+            IllegalStateException.class,
+            EmailConfirmationException.class,
+            NotConfirmedEmailException.class
+    })
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseStatusException handleAppException(RuntimeException ex) {
+    public ResponseStatusException handleConflictAppException(RuntimeException ex) {
         return new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
     }
 
     @ResponseBody
-    @ExceptionHandler({MethodArgumentNotValidException.class,
-                        ConstraintViolationException.class})
+    @ExceptionHandler({SortByException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseStatusException handleBadRequestAppException(RuntimeException ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            ConstraintViolationException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBadRequest(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

@@ -30,14 +30,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse findCurrentUserResponse(UserDetailsImpl userDetails) {
-            if(Objects.isNull(userDetails)){
-                throw new IllegalArgumentException("UserDetails instance can't be null");
-            }
-            return UserResponse.builder()
-                    .firstName(userDetails.getFirstName())
-                    .lastName(userDetails.getLastName())
-                    .email(userDetails.getEmail())
-                    .build();
+            return userMapper.map(findCurrentUser(userDetails));
+    }
+
+    @Override
+    public User findCurrentUser(UserDetailsImpl userDetails) {
+        if(Objects.isNull(userDetails)){
+            throw new IllegalArgumentException("UserDetails instance can't be null");
+        }
+        return findUserById(userDetails.getId());
     }
 
     @Override

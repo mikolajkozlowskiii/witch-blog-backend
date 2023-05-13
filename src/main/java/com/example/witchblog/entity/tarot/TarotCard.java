@@ -7,7 +7,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
+@NamedEntityGraph(name = "TarotCard.withCollections",
+        attributeNodes = {
+                @NamedAttributeNode("fortune_telling"),
+                @NamedAttributeNode("keywords"),
+                @NamedAttributeNode("questionsToAsk"),
+                @NamedAttributeNode("meanings")
+        }
+)
 @Entity
 @Data
 @AllArgsConstructor
@@ -37,13 +46,13 @@ public class TarotCard {
     @Column(name = "img")
     private String img;
 
-    @ElementCollection
-    private List<String> fortune_telling;
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Set<String> fortune_telling;
 
-    @ElementCollection
-    private List<String> keywords;
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Set<String> keywords;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CardMeaning meanings;
 
     @JsonProperty("Archetype")
@@ -75,9 +84,9 @@ public class TarotCard {
     private String affirmation;
 
     @JsonProperty("Questions to Ask")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "question")
     @CollectionTable(name = "tarot_card_questions", joinColumns = @JoinColumn(name = "card_id"))
-    private List<String> questionsToAsk;
+    private Set<String> questionsToAsk;
 
 }

@@ -5,6 +5,7 @@ import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Component
 public class JwtMapper {
     public JwtResponse map(String tokenJwt, UserDetailsImpl userDetails, List<String> roles){

@@ -5,7 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
+@NamedEntityGraph(name = "CardMeaning.withSets", attributeNodes = {
+        @NamedAttributeNode("light"),
+        @NamedAttributeNode("shadow")
+})
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,9 +24,9 @@ public class CardMeaning {
     @JsonIgnore
     private Long id;
     @ElementCollection
-    private List<String> light;
+    private Set<String> light;
     @ElementCollection
-    private List<String> shadow;
+    private Set<String> shadow;
 
 }
 

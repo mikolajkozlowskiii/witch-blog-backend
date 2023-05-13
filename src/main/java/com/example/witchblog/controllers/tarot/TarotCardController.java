@@ -1,6 +1,8 @@
 package com.example.witchblog.controllers.tarot;
 
 import com.example.witchblog.entity.tarot.TarotCard;
+import com.example.witchblog.security.userDetails.CurrentUser;
+import com.example.witchblog.security.userDetails.UserDetailsImpl;
 import com.example.witchblog.services.tarot.TarotCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +61,15 @@ public class TarotCardController {
     }
 
     @GetMapping("random")
-    public ResponseEntity<List<TarotCard>> getRandomThreeCards(@RequestParam(defaultValue = "3") Integer numOfCards) throws IOException {
+    public ResponseEntity<List<TarotCard>> getRandomThreeCards(@RequestParam(defaultValue = "3") Integer numOfCards) {
         List<TarotCard> tarotCards = tarotCardService.getRandomCards(numOfCards);
+        return new ResponseEntity<>(tarotCards, HttpStatus.OK);
+    }
+
+    @GetMapping("divination")
+    public ResponseEntity<List<TarotCard>> createDivination(@CurrentUser UserDetailsImpl currentUser,
+                                                            @RequestParam(defaultValue = "3") Integer numOfCards) {
+        List<TarotCard> tarotCards = tarotCardService.generateDivinationForUser(currentUser, numOfCards);
         return new ResponseEntity<>(tarotCards, HttpStatus.OK);
     }
 
