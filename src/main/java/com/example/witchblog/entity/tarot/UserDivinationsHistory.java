@@ -23,11 +23,15 @@ public class UserDivinationsHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "divinations_history_cards",
+            joinColumns = @JoinColumn(name = "divination_id"),
+            inverseJoinColumns = @JoinColumn(name = "card_id"))
+    @JoinColumn(unique = false)
     @JsonIgnoreProperties({"meanings", "anotherPropertyToIgnore", "keywords", "fortune_telling", "questionsToAsk"})
     @JsonProperty("tarotCardIds")
     private Set<TarotCard> cards;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private User user;
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

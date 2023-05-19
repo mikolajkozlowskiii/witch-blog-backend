@@ -28,8 +28,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserDivinationsHistoryController {
     private final UserDivinationsHistoryService userDivinationsHistoryService;
-    private final TarotCardService tarotCardService;
-    private final UserService userService;
 
     @GetMapping("/{userId}")
     public ResponseEntity<Page<UserDivinationsHistoryResponse>> findUsersDivinations(
@@ -41,14 +39,5 @@ public class UserDivinationsHistoryController {
             return ResponseEntity.ok(userDivinationsHistoryService
                     .findAllByUserId(userId, PageRequest.of(pageNo, pageSize, Sort.by(sortBy))));
 
-    }
-    @GetMapping("random")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<UserDivinationsHistory> generateRandomDivinations(@CurrentUser UserDetailsImpl currentUser){
-        System.out.println(currentUser.getId());
-        User user = userService.findUserById(currentUser.getId());
-        List<TarotCard> tarotCards = tarotCardService.getRandomCards(3);
-        Set<TarotCard> tarotCardSet = new HashSet<>(tarotCards);
-        return ResponseEntity.ok(userDivinationsHistoryService.buildDivination(user, tarotCardSet));
     }
 }

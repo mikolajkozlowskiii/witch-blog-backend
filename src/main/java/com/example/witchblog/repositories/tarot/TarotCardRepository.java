@@ -9,7 +9,23 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TarotCardRepository extends JpaRepository<TarotCard, Long> {
+    @Query("SELECT DISTINCT t FROM TarotCard t " +
+            "LEFT JOIN FETCH t.fortune_telling " +
+            "LEFT JOIN FETCH t.keywords " +
+            "LEFT JOIN FETCH t.questionsToAsk " +
+            "LEFT JOIN FETCH t.meanings " +
+            "LEFT JOIN FETCH t.meanings.light " +
+            "LEFT JOIN FETCH t.meanings.shadow " +
+            "WHERE t.id = :id")
     Optional<TarotCard> findById(Long id);
+    @Query("SELECT DISTINCT t FROM TarotCard t " +
+            "LEFT JOIN FETCH t.fortune_telling " +
+            "LEFT JOIN FETCH t.keywords " +
+            "LEFT JOIN FETCH t.questionsToAsk " +
+            "LEFT JOIN FETCH t.meanings " +
+            "LEFT JOIN FETCH t.meanings.light " +
+            "LEFT JOIN FETCH t.meanings.shadow " +
+            "WHERE t.name = :name")
     Optional<TarotCard> findByName(String name);
 
    // @Query("SELECT distinct t FROM TarotCard t LEFT JOIN FETCH t.meanings m")

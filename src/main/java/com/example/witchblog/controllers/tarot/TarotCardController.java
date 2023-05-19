@@ -46,6 +46,7 @@ public class TarotCardController {
 
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getTarotCardByName(@PathVariable String name){
+        System.out.println(name);
         final TarotCard tarotCard = tarotCardService.findCardByName(name);
 
         return ResponseEntity.ok(tarotCard);

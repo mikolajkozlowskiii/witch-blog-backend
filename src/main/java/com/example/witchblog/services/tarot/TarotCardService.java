@@ -13,7 +13,4 @@ public interface TarotCardService {
     TarotCard findCardById(Long id);
     TarotCard findCardByName(String name);
     List<TarotCard> findAll();
-    // jaka metoda ktora jako argument pobiera @currentUserDetails czy cos i w nim sie zapisuje saveuser divination i sa zwrocone tez te larty 3
-    // pobiera numOfCards i currentUser, w body te 3 karty + save wylosowania, zwraca te 3 karty
-
 }
