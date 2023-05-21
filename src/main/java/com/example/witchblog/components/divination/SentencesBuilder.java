@@ -131,7 +131,6 @@ public class SentencesBuilder {
         double percent =  (double) divinationCards.stream()
                 .filter(s -> !s.isReversed())
                 .count() / divinationCards.size() * 100;
-        System.out.println(percent);
         return percent;
     }
 }
