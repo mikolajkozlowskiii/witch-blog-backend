@@ -2,7 +2,7 @@ package com.example.witchblog.services.tarot.impl;
 
 import com.example.witchblog.dto.tarot.response.UserDivinationsHistoryResponse;
 import com.example.witchblog.entity.tarot.TarotCard;
-import com.example.witchblog.entity.tarot.UserDivinationsHistory;
+import com.example.witchblog.entity.divination.DivinationUserHistory;
 import com.example.witchblog.entity.users.User;
 import com.example.witchblog.exceptions.SortByException;
 import com.example.witchblog.repositories.tarot.UserDivinationsHistoryRepository;
@@ -28,36 +28,36 @@ public class UserDivinationsHistoryServiceImpl implements UserDivinationsHistory
     private UserDivinationsHistoryMapper mapper;
     private UserService userService;
     @Override
-    public UserDivinationsHistory buildDivination(User user, Set<TarotCard> tarotCards) {
-        UserDivinationsHistory userDivinationsHistory = UserDivinationsHistory.builder()
+    public DivinationUserHistory buildDivination(User user, Set<TarotCard> tarotCards) {
+        DivinationUserHistory divinationHistory = DivinationUserHistory.builder()
                 .user(user)
-                .cards(tarotCards)
+                //.cards(tarotCards)
                 .createdAt(Instant.now())
                 .build();
-        return save(userDivinationsHistory);
+        return save(divinationHistory);
     }
 
     @Override
-    public UserDivinationsHistory saveUserDivination(UserDetailsImpl currentUser, Set<TarotCard> tarotCards) {
+    public DivinationUserHistory saveUserDivination(UserDetailsImpl currentUser, Set<TarotCard> tarotCards) {
         User user = userService.findCurrentUser(currentUser);
-        UserDivinationsHistory userDivinationsHistory = buildDivination(user, tarotCards);
-        return save(userDivinationsHistory);
+        DivinationUserHistory divinationHistory = buildDivination(user, tarotCards);
+        return save(divinationHistory);
     }
 
     @Override
-    public UserDivinationsHistory save(UserDivinationsHistory history){
+    public DivinationUserHistory save(DivinationUserHistory history){
         return userDivinationsHistoryRepository.save(history);
     }
 
     @Override
-    public Page<UserDivinationsHistory> findAll(Pageable pageable) {
+    public Page<DivinationUserHistory> findAll(Pageable pageable) {
         return userDivinationsHistoryRepository.findAll(pageable);
     }
 
     @Override
     public Page<UserDivinationsHistoryResponse> findAllByUserId(Long userId, Pageable pageable) {
         try{
-            Page<UserDivinationsHistory> userDivinationsHistory =
+            Page<DivinationUserHistory> userDivinationsHistory =
                     userDivinationsHistoryRepository.findAllByUserId(userId, pageable);
             List<UserDivinationsHistoryResponse> userDivinationsHistoryResponses =
                     userDivinationsHistory.stream().map(s->mapper.map(s)).toList();

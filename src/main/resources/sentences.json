@@ -1,0 +1,116 @@
+{
+  "firstSentences": [
+    "Hello {first_name}! Get ready for your daily divination for {date} ",
+    "Hey there, {first_name}! It's {date}. Let's dive into today's fortune telling. ",
+    "Hi {first_name}! Happy {date}. Prepare yourself for today's divination. ",
+    "Greetings, {first_name}! It's {date} already. Time for your daily prophecy. ",
+    "Good day, {first_name}! Let's explore the predictions for {date}. ",
+    "Hello, {first_name}! Discover what the future holds for {date}. ",
+    "Hey {first_name}! Let's unveil the secrets of {date} divination. ",
+    "Hi there, {first_name}! Let's uncover the mysteries of {date} divination. ",
+    "Greetings, {first_name}! Time to reveal {date} prophecies. ",
+    "Good day, {first_name}! Let's find out what the stars have in store for you in {date}. "
+  ],
+  "midSentences": {
+    "positive": [
+      "Luckily, you will ",
+      "Thankfully, you are about to ",
+      "Fortuitously, you will soon ",
+      "To your good fortune, you are going to ",
+      "In a stroke of luck, you will ",
+      "By a fortunate turn of events, you are about to ",
+      "Thankfully, you are on the verge of ",
+      "By good fortune, you will ",
+      "In a stroke of serendipity, you are going to ",
+      "To your advantage, you are about to "
+    ],
+    "negative": [
+      "Regrettably, you will ",
+      "Sadly, you are about to ",
+      "Alas, you will soon ",
+      "To your dismay, you are going to ",
+      "In an unfortunate turn of events, you will ",
+      "By an unlucky twist of fate, you are about to ",
+      "Sadly, you are on the verge of ",
+      "To your disappointment, you will ",
+      "In a stroke of misfortune, you are going to ",
+      "To your chagrin, you are about to "
+    ],
+    "connect": [
+      "Nevertheless, ",
+      "Nonetheless, ",
+      "Still, ",
+      "Yet, ",
+      "On the other hand, ",
+      "In spite of that, ",
+      "Alternatively, ",
+      "Conversely, ",
+      "Notwithstanding, ",
+      "Regardless, "
+    ]
+  },
+
+
+  "lastSentences": {
+    "0":[
+      "Although the divinations were not favorable, keep your spirits up and make the most of the day.",
+      "Despite the less fortunate divinations, stay resilient and seek out positive moments throughout the day.",
+      "The divinations may not have been in your favor, but remember that you have the power to shape your own destiny.",
+      "While the divinations were not auspicious, remain hopeful and trust in your ability to overcome any challenges.",
+      "Although the divinations brought disappointment, let them serve as a reminder to appreciate the small joys in life.",
+      "Despite the negative divination, don't let it dampen your spirit and find moments of happiness amidst adversity.",
+      "The less fortunate divinations may test your resilience, but remember that each day brings new opportunities.",
+      "While the divinations were not optimistic, stay determined and focus on personal growth and self-care.",
+      "Although the divinations may have cast a shadow, remain hopeful and believe in brighter days ahead.",
+      "Despite the less favorable divination, embrace the lessons they offer and use them as stepping stones to future success."
+    ],
+    "25":[
+      "Despite the majority of unlucky divinations, cherish the few positive ones and let them guide you through the day.",
+      "While most of the divinations brought unfortunate news, hold on to the small positive prophecies and let them inspire hope.",
+      "Although the majority of the divinations were discouraging, find solace in the few optimistic ones and let them brighten your day.",
+      "Despite the predominance of negative divinations, pay attention to the handful of positive ones and let them fuel your determination.",
+      "While most of the divinations hinted at misfortune, embrace the few auspicious prophecies and let them provide a ray of light.",
+      "Although the majority of the divinations were unfavorable, focus on the handful of uplifting predictions and let them uplift your spirit.",
+      "Despite the prevalence of less fortunate divinations, seek comfort in the few favorable ones and let them ignite resilience within you.",
+      "While most of the divinations were disheartening, treasure the few optimistic forecasts and let them infuse positivity into your day.",
+      "Although the majority of the divinations pointed towards challenges, cling to the few positive omens and let them shape your perspective.",
+      "Despite the greater portion of negative divinations, embrace the small fraction of positive ones and let them guide your actions."
+    ],
+    "50":[
+      "The divination brings mixed emotions, but embrace the possibilities of the day.",
+      "The predictions leave you uncertain, yet curious about what the day holds.",
+      "It's a forecast that stirs a range of emotions, keeping you intrigued.",
+      "The omens are both intriguing and puzzling, adding a sense of mystery to the day.",
+      "Mixed feelings arise from the divination, but let it inspire you to explore new paths.",
+      "The prophecies evoke a sense of anticipation and caution, creating an intriguing blend.",
+      "The predictions bring a mix of excitement and uncertainty, leaving room for unexpected twists.",
+      "It's a forecast that sparks a mix of hope and skepticism, inviting you to navigate the day with curiosity.",
+      "The divination elicits a combination of enthusiasm and hesitation, encouraging a balanced approach.",
+      "Mixed emotions arise from the omens, but let them serve as a reminder of life's unpredictability."
+    ],
+    "75": [
+      "Impressive divinations! Wishing you a day filled with positivity!",
+      "Well done on the promising predictions! May your day be joyful and fulfilling!",
+      "Great insights! Wishing you a day of opportunities and happiness!",
+      "Positive omens ahead! Have a fantastic day!",
+      "Congratulations on the encouraging forecast! May your day be filled with positivity!",
+      "Wonderful signs! Wishing you a day of luck and contentment!",
+      "Promising prophecies! Enjoy a day filled with positivity and success!",
+      "Congratulations on the favorable divination! Have a day of happiness and abundance!",
+      "Exciting predictions! Wishing you a day of positive experiences!",
+      "Well interpreted signs! May your day be filled with blessings and positivity!"
+    ],
+    "100": [
+      "Congratulations on the positive divination! Have a wonderful day!",
+      "Great predictions! Wishing you a day filled with happiness and success!",
+      "The fortune smiles upon you! Enjoy a fantastic day!",
+      "What a lucky forecast! May you have an amazing day!",
+      "Fantastic omens! Wishing you a day of joy and fulfillment!",
+      "The divination speaks of good things to come. Have a marvelous day!",
+      "Luck is on your side! Enjoy a day filled with positivity and blessings!",
+      "Wonderful prophecies! Wishing you a day of happiness and abundance!",
+      "Embrace the positive signs! May you have a day full of good fortune!",
+      "Congratulations on the promising forecast! Have a day filled with happiness!"
+    ]
+  }
+}
