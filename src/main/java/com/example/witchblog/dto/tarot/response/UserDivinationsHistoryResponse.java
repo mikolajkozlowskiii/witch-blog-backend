@@ -1,5 +1,7 @@
 package com.example.witchblog.dto.tarot.response;
 
+import com.example.witchblog.dto.response.DivinationResponse;
+import com.example.witchblog.entity.divination.Divination;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +16,7 @@ import java.util.Set;
 @ToString
 public class UserDivinationsHistoryResponse {
     private Long id;
-    private Set<String> tarotCardsName;
+    private DivinationResponse divinationResponse;
     private Long userId;
     private Instant createdAt;
 }
