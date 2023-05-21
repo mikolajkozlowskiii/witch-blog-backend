@@ -31,7 +31,6 @@ public class UserDivinationsHistoryServiceImpl implements UserDivinationsHistory
     public DivinationUserHistory buildDivination(User user, Set<TarotCard> tarotCards) {
         DivinationUserHistory divinationHistory = DivinationUserHistory.builder()
                 .user(user)
-                //.cards(tarotCards)
                 .createdAt(Instant.now())
                 .build();
         return save(divinationHistory);

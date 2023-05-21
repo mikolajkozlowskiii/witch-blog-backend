@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,11 +35,12 @@ public class LocalPredictionServiceImpl implements PredictionService {
 
     @Transactional
     private Sentence loadSentences() {
-        try{
+        try {
             ObjectMapper objectMapper = new ObjectMapper();
-            Sentence sentence = objectMapper.readValue(resourceFile.getFile(), Sentence.class);
+            InputStream inputStream = resourceFile.getInputStream();
+            Sentence sentence = objectMapper.readValue(inputStream, Sentence.class);
             return sentence;
-        } catch (IOException ex){
+        } catch (IOException ex) {
             return null;
         }
     }
