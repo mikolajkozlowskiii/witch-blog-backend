@@ -46,7 +46,7 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-    @PutMapping()
+    @PutMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable(value = "email") String email,
                                                           @Valid @RequestBody UpdateUserRequest updateUserRequest,
