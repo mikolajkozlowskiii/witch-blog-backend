@@ -65,7 +65,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests(
-                        s->s.requestMatchers("/api/v1/auth/**").permitAll()
+                        s->s.requestMatchers("/api/v1/auth/**", "/api/v1/articles/**").permitAll()
                                 .requestMatchers("/api/v1/test/**").permitAll()
                                 .requestMatchers("/auth/**", "/oauth2/**").permitAll()
                                 .requestMatchers("/api/v1/images/**").permitAll()
