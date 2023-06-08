@@ -57,7 +57,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("getCurrentUser returns UserResponse with correct data")
     public void findCurrentUser_CurrentUser_ReturnsUserResponse() {
-        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(),user.getLastName(), user.getBirthDate());
+        UserResponse expectedResponse = new UserResponse(user.getId(), user.getEmail(), user.getFirstName(),user.getLastName(), user.getBirthDate());
         UserResponse actualResponse = userService.findCurrentUserResponse(userDetails);
 
         Assertions.assertEquals(expectedResponse, actualResponse);
@@ -65,9 +65,9 @@ class UserServiceImplTest {
     @Test
     public void findUserByEmail_EmailFounded_ReturnsUserResponse() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
-        when(userMapper.map(user)).thenReturn(new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate()));
+        when(userMapper.map(user)).thenReturn(new UserResponse(user.getId(),user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate()));
 
-        UserResponse expectedResponse = new UserResponse(user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate());
+        UserResponse expectedResponse = new UserResponse(user.getId() ,user.getEmail(), user.getFirstName(), user.getLastName(), user.getBirthDate());
         UserResponse actualResponse = userService.findUserResponseByEmail(user.getEmail());
 
         Assertions.assertEquals(expectedResponse, actualResponse);
