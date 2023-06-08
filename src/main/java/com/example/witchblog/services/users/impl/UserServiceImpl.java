@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -110,5 +111,43 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+    }
+
+    @Override
+    public List<User> findAllUsersWithOnlyUserRole() {
+        return userRepository
+                .findAll()
+                .stream()
+                .filter(
+                        s-> !s.getRoles().contains(new Role(ERole.ROLE_MODERATOR))
+                                && !s.getRoles().contains(new Role(ERole.ROLE_ADMIN)))
+                .toList();
+    }
+
+    @Override
+    public List<User> findAllUsersWithOnlyModeratorRoleAndNotAdmin() {
+        return userRepository
+                .findAll()
+                .stream()
+                .filter(
+                        s-> s.getRoles().contains(new Role(ERole.ROLE_MODERATOR))
+                                && !s.getRoles().contains(new Role(ERole.ROLE_ADMIN)))
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> findAllUsersResponseWithOnlyUserRole() {
+        return findAllUsersWithOnlyUserRole()
+                .stream()
+                .map(userMapper::map)
+                .toList();
+    }
+
+    @Override
+    public List<UserResponse> findAllUsersResponseWithModeratorRoleAndNotAdmin() {
+        return findAllUsersWithOnlyModeratorRoleAndNotAdmin()
+                .stream()
+                .map(userMapper::map)
+                .toList();
     }
 }
