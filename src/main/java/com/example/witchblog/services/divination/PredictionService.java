@@ -6,5 +6,6 @@ import java.io.IOException;
 import java.util.Set;
 
 public interface PredictionService {
-    public String generatePrediction(String userName, Set<DivinationCard> divinationCards) throws IOException;
+    String generatePrediction(String userName, Set<DivinationCard> divinationCards) throws IOException;
+    String generatePredictionAnonymously(Set<DivinationCard> divinationCards) throws IOException;
 }

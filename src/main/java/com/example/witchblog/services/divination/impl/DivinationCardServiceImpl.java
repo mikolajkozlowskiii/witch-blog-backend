@@ -1,5 +1,6 @@
 package com.example.witchblog.services.divination.impl;
 
+import com.example.witchblog.dto.tarot.request.TarotCardRequest;
 import com.example.witchblog.entity.divination.DivinationCard;
 import com.example.witchblog.entity.tarot.TarotCard;
 import com.example.witchblog.services.divination.DivinationCardService;
@@ -23,8 +24,23 @@ public class DivinationCardServiceImpl implements DivinationCardService {
         return tarotCards.stream().map(this::generateDivinationCard).collect(Collectors.toSet());
     }
 
+    @Override
+    public Set<DivinationCard> generateDivinationCards(Set<TarotCardRequest> tarotCardRequests) {
+        return tarotCardRequests.stream().map(this::generateDivinationCard).collect(Collectors.toSet());
+    }
+
     private DivinationCard generateDivinationCard(TarotCard tarotCard){
         final boolean isReversed = getRandomBoolean();
+        final String meaning = getRandomMeaning(tarotCard, isReversed);
+        return DivinationCard.builder()
+                .card(tarotCard)
+                .isReversed(isReversed)
+                .meaning(meaning)
+                .build();
+    }
+    private DivinationCard generateDivinationCard(TarotCardRequest cardRequest){
+        final boolean isReversed = cardRequest.isReversed();
+        final TarotCard tarotCard = tarotCardService.findCardByName(cardRequest.getNameOfCard());
         final String meaning = getRandomMeaning(tarotCard, isReversed);
         return DivinationCard.builder()
                 .card(tarotCard)

@@ -33,6 +33,14 @@ public class LocalPredictionServiceImpl implements PredictionService {
         return prediction;
     }
 
+    @Override
+    public String generatePredictionAnonymously(Set<DivinationCard> divinationCards) throws IOException {
+        final Sentence sentence = loadSentences();
+
+        final String prediction = sentencesBuilder.getSentencesOfPredictionAnonymously(sentence, divinationCards);
+        return prediction;
+    }
+
     @Transactional
     private Sentence loadSentences() {
         try {

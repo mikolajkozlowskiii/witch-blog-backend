@@ -20,6 +20,13 @@ public class SentencesBuilder {
 
         return firstSentence + midSentences + lastSentence;
     }
+
+    public String getSentencesOfPredictionAnonymously(Sentence sentence, Set<DivinationCard> divinationCards){
+        final String midSentences = getMidSentencesOfPrediction(divinationCards, sentence.getMidSentences());
+        final String lastSentence = getLastSentenceOfPredicition(divinationCards, sentence.getLastSentences());
+
+        return midSentences + lastSentence;
+    }
     public String getFirstSentenceOfPrediction(String userName, List<String> firstSentences) {
         final String drawnSentence = firstSentences.get(new Random().nextInt(firstSentences.size()));
         return assignNameAndDate(userName, drawnSentence);

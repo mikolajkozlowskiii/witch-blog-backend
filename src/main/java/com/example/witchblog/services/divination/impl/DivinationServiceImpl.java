@@ -2,6 +2,7 @@ package com.example.witchblog.services.divination.impl;
 
 import com.example.witchblog.dto.response.DivinationResponse;
 import com.example.witchblog.dto.response.DivinationUserHistoryResponse;
+import com.example.witchblog.dto.tarot.request.TarotCardRequest;
 import com.example.witchblog.entity.divination.Divination;
 import com.example.witchblog.entity.divination.DivinationCard;
 import com.example.witchblog.entity.divination.DivinationUserHistory;
@@ -40,6 +41,35 @@ public class DivinationServiceImpl implements DivinationService {
         return divinationMapper.map(divination);
     }
 
+    @Override
+    public DivinationResponse makeUserDivinationForMobileApp(UserDetailsImpl currentUser,
+                                                             Set<TarotCardRequest> cards) throws IOException {
+        final Divination divination = generateDivinationEntity(cards, currentUser.getName());
+        divinationUserHistoryService.save(divination, currentUser);
+        return divinationMapper.map(divination);
+    }
+
+    @Override
+    public DivinationResponse makeDivinationAnonymoulsy(Set<TarotCardRequest> cards) throws IOException {
+        final Divination divination = generateDivinationEntity(cards);
+        return divinationMapper.map(divination);
+    }
+    private Divination generateDivinationEntity(Set<TarotCardRequest> cards) throws IOException {
+        final Set<DivinationCard> divinationCards = divinationCardService.generateDivinationCards(cards);
+        final String prediction = predictionService.generatePredictionAnonymously(divinationCards);
+        return Divination.builder()
+                .cards(divinationCards)
+                .prediction(prediction)
+                .build();
+    }
+    private Divination generateDivinationEntity(Set<TarotCardRequest> cards, String userName) throws IOException {
+        final Set<DivinationCard> divinationCards = divinationCardService.generateDivinationCards(cards);
+        final String prediction = predictionService.generatePrediction(userName, divinationCards);
+        return Divination.builder()
+                .cards(divinationCards)
+                .prediction(prediction)
+                .build();
+    }
     private Divination generateDivinationEntity(String userName) throws IOException {
         final Set<DivinationCard> divinationCards = divinationCardService.generateDivinationCards();
         final String prediction = predictionService.generatePrediction(userName, divinationCards);
