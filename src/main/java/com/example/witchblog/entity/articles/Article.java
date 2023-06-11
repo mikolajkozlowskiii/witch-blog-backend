@@ -22,7 +22,7 @@ public class Article {
     @Column(length = 50)
     private String title;
     @Lob
-    @Column(name="CONTENT", length=512)
+    @Column(name="CONTENT", length=1024)
     private String content;
 
     @Column(name = "created_date", nullable = false, updatable = false)
