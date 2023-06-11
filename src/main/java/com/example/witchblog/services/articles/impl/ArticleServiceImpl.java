@@ -47,8 +47,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.setModifiedBy(modifiedBy);
         article.setModifiedDate(LocalDateTime.now());
         article.setContent(articleUpdateContent.getContent());
+        article.setTitle(articleUpdateContent.getTitle());
 
-        System.out.println(article);
         return articleMapper.map(articleRepository.save(article));
     }
 
