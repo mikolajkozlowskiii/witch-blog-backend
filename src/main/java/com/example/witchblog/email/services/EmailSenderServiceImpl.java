@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class EmailSenderServiceImpl implements EmailSenderService {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailSenderServiceImpl.class);
     private final JavaMailSender mailSender;
-    //@Value(value = "${spring.mail.username}")
+    @Value(value = "${spring.mail.username}")
     private final static String emailFrom = "witchblog13@gmail.com";
     @Override
     public void send(String to, String email) {

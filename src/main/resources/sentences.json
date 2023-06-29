@@ -13,28 +13,26 @@
   ],
   "midSentences": {
     "positive": [
-      "Luckily, you will ",
-      "Thankfully, you are about to ",
-      "Fortuitously, you will soon ",
-      "To your good fortune, you are going to ",
-      "In a stroke of luck, you will ",
-      "By a fortunate turn of events, you are about to ",
-      "Thankfully, you are on the verge of ",
-      "By good fortune, you will ",
-      "In a stroke of serendipity, you are going to ",
-      "To your advantage, you are about to "
+      "Luckily, you will be ",
+      "Thankfully, you are about to be ",
+      "Fortuitously, you will soon be ",
+      "To your good fortune, you are going to be ",
+      "In a stroke of luck, you will be ",
+      "By a fortunate turn of events, you are about to be ",
+      "By good fortune, you will be ",
+      "In a stroke of serendipity, you are going to be ",
+      "To your advantage, you are about to be "
     ],
     "negative": [
-      "Regrettably, you will ",
-      "Sadly, you are about to ",
-      "Alas, you will soon ",
-      "To your dismay, you are going to ",
-      "In an unfortunate turn of events, you will ",
-      "By an unlucky twist of fate, you are about to ",
-      "Sadly, you are on the verge of ",
-      "To your disappointment, you will ",
-      "In a stroke of misfortune, you are going to ",
-      "To your chagrin, you are about to "
+      "Regrettably, you will be ",
+      "Sadly, you are about to be ",
+      "Alas, you will soon be ",
+      "To your dismay, you are going to be ",
+      "In an unfortunate turn of events, you will be ",
+      "By an unlucky twist of fate, you are about to be ",
+      "To your disappointment, you will be ",
+      "In a stroke of misfortune, you are going to be ",
+      "To your chagrin, you are about to be "
     ],
     "connect": [
       "Nevertheless, ",
@@ -49,8 +47,6 @@
       "Regardless, "
     ]
   },
-
-
   "lastSentences": {
     "0":[
       "Although the divinations were not favorable, keep your spirits up and make the most of the day.",
