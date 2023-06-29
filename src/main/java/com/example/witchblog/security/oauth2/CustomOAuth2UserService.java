@@ -72,7 +72,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User mapOAuth2UserOnUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         User user = User.builder()
                         .email(oAuth2UserInfo.getEmail())
-                        .firstName(oAuth2UserInfo.getName())
+                        .firstName(oAuth2UserInfo.getFirstName())
+                        .lastName(oAuth2UserInfo.getLastName())
                         .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                         .isEnabled(true)
                         .build();
@@ -82,7 +83,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setFirstName(oAuth2UserInfo.getName());
+        // existingUser.setFirstName(oAuth2UserInfo.getFirstName());
         return userRepository.save(existingUser);
     }
 }

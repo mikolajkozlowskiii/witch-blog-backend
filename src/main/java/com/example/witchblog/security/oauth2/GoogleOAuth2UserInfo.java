@@ -2,6 +2,7 @@ package com.example.witchblog.security.oauth2;
 
 import lombok.ToString;
 
+import java.util.Arrays;
 import java.util.Map;
 @ToString
 public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
@@ -17,9 +18,19 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
-    public String getName() {
-        System.out.println(attributes);
-        return (String) attributes.get("name");
+    public String getFirstName() {
+        return Arrays
+                .stream(attributes.get("name").toString().split(" "))
+                .findFirst()
+                .orElse("");
+    }
+
+    @Override
+    public String getLastName() {
+        return Arrays.stream(attributes.get("name").toString().split(" "))
+                .skip(1).
+                findFirst()
+                .orElse("");
     }
 
     @Override
